@@ -1,40 +1,49 @@
-var express = require('express');
-var router = express.Router();
-const rangeParser = require('range-parser');
 const fs = require('fs');
-const path = require('path');
-
+const rangeParser = require('range-parser');
+const express = require('express');
+const router = express.Router();
 
 router.get('/', function(req, res, next) {
   res.render('index');
 });
 
+const Film = require('../db/models/films')
 
-router.get('/video', (req, res) => {
-  const videoPath = 'videos/UFDP.S09E14.mp4';
-  const stat = fs.statSync(videoPath); //obter informações estatísticas do arquivo, retorna um objeto fs.Stats, o qual contém informações sobre o arquivo como tamanho, timestamps de modificação, criação, etc.
-  const fileSize = stat.size; //está atribuindo o tamanho do arquivo (em bytes) à variável
 
-  const range = req.headers.range || 'bytes=0-';
+//filmes
+router.get('/:name', async (req, res) => {
+  const name = req.params.name
+  const pathFilm = await Film.findOne({name: name })
+ 
 
-  const positions = rangeParser(fileSize, range, { combine: true });
+  try {
 
-  const start = positions[0].start;
-  const end = positions[0].end;
+    const videoPath = 'videos/' + pathFilm.path + '.' + pathFilm.format
+    const stat = fs.statSync(videoPath);
+    const fileSize = stat.size;
 
-  const chunkSize = (end - start) + 1;
+    const range = req.headers.range || 'bytes=0-';
+    const positions = rangeParser(fileSize, range, { combine: false })[0];
+    const start = positions.start;
+    const end = positions.end;
 
-  const stream = fs.createReadStream(videoPath, { start, end });
+    const chunkSize = Math.min(1024 * 1024, end - start + 1);
 
-  res.writeHead(206, {
-    'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-    'Accept-Ranges': 'bytes',
-    'Content-Length': chunkSize,
-    'Content-Type': 'video/mp4',
-  });
+    const stream = fs.createReadStream(videoPath, { start, end });
 
-  stream.pipe(res);
+    res.writeHead(206, {
+      'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': chunkSize,
+      'Content-Type': 'video/mp4',
+      'Cache-Control': 'public, max-age=3600', // Ajustado para 1 hora
+    });
+
+    stream.pipe(res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 });
-
 
 module.exports = router;
