@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 
 const serieSchema = new mongoose.Schema({
+    metadataId:{
+       type: String,
+       required: false 
+    },
     name: {
         type:String,
         required: true
@@ -16,9 +20,7 @@ const serieSchema = new mongoose.Schema({
     season:{
         type: Number,
         require: true
-    },
-
-
+    }
 })
 
 module.exports = mongoose.model('series', serieSchema)

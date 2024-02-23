@@ -44,3 +44,13 @@ exports.pagination = async (req, res) => {
   const filmsPage = filmsList.slice(page * 10, 40); 
   res.status(200).json(filmsPage);
 }
+
+exports.register = async (req, res) => {
+  try{
+    console.log('Recebido upload de vídeo:', req.file);
+    res.status(200).json('filme salvo!');
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao salvar filme' });
+  }
+}
