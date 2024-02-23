@@ -8,6 +8,8 @@ require('./db/connect')
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
+const filmsRouter = require('./routes/films')
+const serieRouter = require('./routes/serie')
 
 var app = express();
 
@@ -26,6 +28,8 @@ app.use(cors())
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter)
+app.use('/film', filmsRouter)
+app.use('/serie', serieRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

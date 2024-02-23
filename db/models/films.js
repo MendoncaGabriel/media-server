@@ -9,11 +9,7 @@ const filmSchema = new mongoose.Schema({
         type: String,
         require: true
     },
-    format:{
-        type: String,
-        require: true
-    }
 
 })
 
-module.exports = mongoose.model('filmes', filmSchema)
+module.exports = mongoose.model('films', filmSchema)

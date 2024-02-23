@@ -1,3 +1,15 @@
 .env
-URL_DB=###
+URL_DB=###/media-server
 SECRET=###
+
+
+
+
+
+//Assistr fime: film/nome-do-filme
+//Listar Filmes: film/page/0
+
+//Assistir serie: serie/nome-da-serie/season/1/episode/1
+//Listar series: serie/page/0
+//Episodios por temporada: serie/nome-da-serie/season/1
+//Quantidade de temporadas: serie/nome-da-serie/season

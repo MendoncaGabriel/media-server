@@ -1,3 +1,5 @@
-videos/*
+media/films/*
+media/series/*
+
 node_modules
 .env
