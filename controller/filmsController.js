@@ -47,6 +47,14 @@ exports.pagination = async (req, res) => {
 
 exports.register = async (req, res) => {
   try{
+    const newFilm = new Film({
+      name: req.body.name,
+      path: req.file.filename,
+      metadataId: req.body.metadata
+  })
+
+  newFilm.save()
+  
     console.log('Recebido upload de vídeo:', req.file);
     res.status(200).json('filme salvo!');
   } catch (error) {
