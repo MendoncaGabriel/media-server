@@ -62,19 +62,19 @@ exports.numberOfSeasons = async (req, res) => {
   const nomeDaSerie = req.params.name;
 
   try {
-      const serieEncontrada = await Serie.findOne({ name: nomeDaSerie });
+    const temporadasDistintas = await Serie.distinct('season', { name: nomeDaSerie });
 
-      if (serieEncontrada) {
-          const resultado = { 'season': serieEncontrada.season };
-          res.json(resultado);
-      } else {
-          res.status(404).json({ message: 'Série não encontrada' });
-      }
+    const numeroDeTemporadas = temporadasDistintas.length;
+
+    const resultado = { 'numeroDeTemporadas': numeroDeTemporadas };
+    res.json(resultado);
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Erro interno do servidor' });
+    console.error(error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
   }
 };
+
+
 
 exports.register = async (req, res) => {
   try{
