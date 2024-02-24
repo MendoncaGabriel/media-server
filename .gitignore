@@ -1,5 +1,9 @@
+# Ignorar arquivos dentro das pastas, mas não as pastas em si
 media/films/*
 media/series/*
 
+# Ignorar a pasta node_modules
 node_modules
+
+# Ignorar o arquivo .env
 .env
