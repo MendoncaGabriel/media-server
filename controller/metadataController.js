@@ -1,13 +1,23 @@
 
+const fs = require('fs/promises');
 const Metadata = require('../db/models/metadata')
+const path = require('path')
+
 exports.update = async (req, res) => {
     try {
-
-        
         const {id, name, cover, type, synopsis, rating, creator, genre, releaseYear} = req.body
         if (!id) {
             return res.status(400).json({msg: 'O campo "id" é obrigatório para a atualização.'});
         }
+
+        // Obtenha os metadados atuais antes da atualização
+        const metadataToUpdate = await Metadata.findById(id);
+        if (!metadataToUpdate) {
+            return res.status(404).json({ msg: 'Documento não encontrado para o ID fornecido.' });
+        }
+
+        // Obtenha o caminho da imagem anterior
+        const previousCoverPath = metadataToUpdate.cover;
         
         const metaUpdate = {};
         if(req.file){metaUpdate.cover = req.file.filename} //se tiver imagem salva o caminho
@@ -22,11 +32,19 @@ exports.update = async (req, res) => {
 
         const updatedMetadata = await Metadata.findByIdAndUpdate(id, metaUpdate, { new: true });
 
-        if (updatedMetadata) {
-            res.status(200).json({ msg: 'Atualizado com sucesso!', data: updatedMetadata });
-        } else {
-            res.status(404).json({msg: 'Documento não encontrado para o ID fornecido.' });
+        // Remova a imagem anterior do sistema de arquivos
+        if (req.file && previousCoverPath) {
+            try {
+                await fs.unlink(path.join(__dirname, '../public/covers', previousCoverPath));
+                res.status(200).json({ msg: 'Atualizado com sucesso!', data: updatedMetadata });
+            } catch (unlinkError) {
+                console.error('Erro ao excluir a imagem anterior:', unlinkError);
+                res.status(404).json({msg: 'Documento não encontrado para o ID fornecido.' });
+            }
         }
+
+
+
         
     } catch (error) {
         console.error(error);

@@ -13,8 +13,14 @@ const storage = multer.diskStorage({
         cb(null, dest);
     },
     filename: function (req, file, cb) {
-        //cb(null, Date.now());
-        cb(null, Date.now() + '-' + file.originalname);
+
+        // Obtém a extensão do arquivo original
+        const originalExtension = path.extname(file.originalname);
+
+        // Cria o novo nome do arquivo com o ID e a extensão original
+        const newFileName = Date.now() + originalExtension;
+
+        cb(null, newFileName);
     }
 });
 

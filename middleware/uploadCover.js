@@ -5,12 +5,12 @@ const path = require('path');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const dest = path.join(__dirname, '../public/covers');
-        console.log('Destination:', dest); // Adicione esta linha para verificar o destino
         cb(null, dest);
     },
     filename: function (req, file, cb) {
-        //cb(null, Date.now());
-        cb(null, Date.now() + '-' + file.originalname);
+        const originalExtension = path.extname(file.originalname);
+        const newFileName = Date.now() + originalExtension;
+        cb(null, newFileName);
     }
 });
 
