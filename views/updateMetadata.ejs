@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualizar de Metadados</title>
+    <link rel="shortcut icon" href="/images/ico.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 h-auto flex  justify-center">
+
+
+
+
+    
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-5xl">
+        <h1 class="text-2xl font-bold mb-6 text-center">Atualizar Metadados</h1>
+
+        <section>
+
+            <label for="metadata"  class="block text-sm font-medium text-gray-600">Selecione um metadado:</label>
+            <select
+                id="metadata"
+                name="metadataId"
+                class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                <option value="" disabled selected hidden>Selecione uma opção</option>
+
+                <% if (typeof metadataList !== 'undefined') { 
+                    metadataList.map(element => { %>
+                        <option value="<%= element._id %>"><%= element.name %></option>
+                <%  }); 
+                } %>
+                
+            </select>
+            <button onclick="buscarMetadado()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 w-full py-2 my-5">Buscar</button>
+        </section>
+
+       
+
+
+
+        <form id="updateForm" action="/metadata/update" method="post" enctype="multipart/form-data" class="space-y-4 hidden">
+        <!-- <form action="/metadata/update" method="post" enctype="multipart/form-data" class="space-y-4 hidden"> -->
+        <!-- <form action="/metadata/update" method="post"  class="space-y-4 hidden"> -->
+            <div class="hidden">
+                <label for="id" class="block text-sm font-medium text-gray-600">id:</label>
+                <input type="text" id="id" name="id"  class="mt-1 p-2 w-full border rounded ">
+            </div>
+
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-600">Nome:</label>
+                <input type="text" id="name" name="name" required class="mt-1 p-2 w-full border rounded">
+            </div>
+
+            <div>
+                <label for="cover" class="block text-sm font-medium text-gray-600">Capa:</label>
+                <input type="file" id="cover" name="cover" accept="image/*" class="mt-1 p-2 w-full border rounded">
+                <img src="" class="w-64 h-96 border m-auto object-contain" id="imgCover" alt="">
+            </div>
+
+            <div>
+                <label for="type" class="block text-sm font-medium text-gray-600">Tipo:</label>
+                <input type="text" id="type" name="type" class="mt-1 p-2 w-full border rounded">
+            </div>
+
+            <div>
+                <label for="releaseYear" class="block text-sm font-medium text-gray-600">Ano de Lançamento:</label>
+                <input type="number" id="releaseYear" name="releaseYear" class="mt-1 p-2 w-full border rounded">
+            </div>
+
+            <div>
+                <label for="genre" class="block text-sm font-medium text-gray-600">Gênero:</label>
+                <input type="text" id="genre" name="genre" class="mt-1 p-2 w-full border rounded">
+            </div>
+
+            <div>
+                <label for="creator" class="block text-sm font-medium text-gray-600">Criador:</label>
+                <input type="text" id="creator" name="creator" class="mt-1 p-2 w-full border rounded">
+            </div>
+
+            <div>
+                <label for="rating" class="block text-sm font-medium text-gray-600">Avaliação:</label>
+                <input type="text" id="rating" name="rating" step="0.1" class="mt-1 p-2 w-full border rounded">
+            </div>
+
+            <div>
+                <label for="synopsis" class="block text-sm font-medium text-gray-600">Sinopse:</label>
+                <textarea id="synopsis" name="synopsis" rows="4" class="mt-1 p-2 w-full border rounded"></textarea>
+            </div>
+
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full" onclick="submitForm()">Atualizar</button>
+        </form>
+
+
+    </div>
+</body>
+</html>
+<script>
+    function buscarMetadado(){
+        const metadata = document.getElementById('metadata').value
+        console.log(metadata)
+
+
+        fetch('/metadata/update-metadata-id', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: metadata
+            })
+        })
+        .then(res => res.json())
+        .then((res) => {
+            console.log(res)
+            document.querySelector('#id').value = res._id || ''
+            document.querySelector('#name').value = res.name || ''
+            document.querySelector('#imgCover').src =  '/covers/' +res.cover || ''
+            document.querySelector('#type').value = res.type || ''
+            document.querySelector('#releaseYear').value = res.releaseYear || ''
+            document.querySelector('#genre').value = res.genre || ''
+            document.querySelector('#creator').value = res.creator || ''
+            document.querySelector('#rating').value = res.rating || ''
+            document.querySelector('#synopsis').value = res.synopsis || ''
+            document.querySelector('form').classList.remove('hidden')
+        })
+        .catch(error => console.error('Erro:', error));
+
+    }
+</script>
+
+<script>
+    function submitForm() {
+        const fileInput = document.getElementById('cover');
+
+        if (fileInput.files.length > 0) {
+            // Se o campo de arquivo tiver algum arquivo selecionado, envie o formulário
+            document.getElementById('updateForm').submit();
+        } else {
+            // Caso contrário, faça o que desejar (por exemplo, mostrar uma mensagem de erro)
+            //alert('Selecione uma imagem antes de enviar o formulário.');
+        }
+    }
+</script>
