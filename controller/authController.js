@@ -26,10 +26,10 @@ exports.register = async (req, res) =>{
         const secret = process.env.SECRET;
         const token = jwt.sign({ id: newUser._id }, secret);
 
-        res.status(200).json({msg: 'Usuario registrado com sucesso!: ' + doc, token})
+        return res.status(200).json({msg: 'Usuario registrado com sucesso!: ' + doc, token})
     })
     .catch((err)=>{
-        res.status(400).json({msg: 'Erro ao registar usuario: ' + err})
+       return res.status(400).json({msg: 'Erro ao registar usuario: ' + err})
     })
 }
 
@@ -47,12 +47,12 @@ exports.login = async (req, res) => {
     )
 
 
-    res.status(200).json({msg: 'Autenticação realizada com sucesso!', token})
+    return res.status(200).json({msg: 'Autenticação realizada com sucesso!', token})
 }
 
 exports.loginFront = async (req, res) => {
-    res.render('login')
+    return res.render('login')
 }
 exports.registerFront = async (req, res) => {
-    res.render('register')
+    return res.render('register')
 }

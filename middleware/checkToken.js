@@ -5,7 +5,8 @@ async function checkToken(req, res, next) {
     const token = req.cookies.token
 
   if (!token) {
-    return res.status(401).json({ msg: "Acesso negado!" });
+    //return res.status(401).json({ msg: "Acesso negado!" });
+    return res.render('login' )
   }
 
 
@@ -19,12 +20,13 @@ async function checkToken(req, res, next) {
     if(userId && user.able == true){
       next();
     }else{
-      return res.status(401).json({ msg: "Acesso negado!" });
-      // res.render('login' )
+      //return res.status(401).json({ msg: "Acesso negado!" });
+      return res.render('login' )
     }
 
   } catch (erro) {
-    res.status(400).json({ msg: "Token Invalido!" });
+    return res.render('login' )
+    //res.status(400).json({ msg: "Token Invalido!" });
   }
 }
 
