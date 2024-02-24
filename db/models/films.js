@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const filmSchema = new mongoose.Schema({
     metadataId:{
         type: String,
-        required: false 
     },
     name: {
         type:String,
