@@ -1,14 +1,12 @@
-const fs = require('fs');
-const rangeParser = require('range-parser');
 const express = require('express');
 const router = express.Router();
+const checkToken = require('../middleware/checkToken')
 
 
 
 
-
-router.get('/', async function(req, res) {
-  res.status(200).send(':)')
+router.get('/',checkToken, async function(req, res) {
+  res.render('index')
 })
 
 

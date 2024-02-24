@@ -4,7 +4,8 @@ SECRET=###
 
 
 
-
+//auth/register
+//auth/login
 
 //Assistr fime: film/nome-do-filme
 //Listar Filmes: film/page/0

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - API</title>
+    <script src="https://cdn.tailwindcss.com"></script></head>
+<body class="lg:p-10 bg-gray-100">
+
+    <section class="p-10 max-w-7xl w-full border m-auto bg-white shadow-lg">
+        <h2 class="border-b mb-2">Autenticação:</h2>
+  
+        <p class="text-gray-500 dark:text-gray-400">
+            <a href="/auth/register" class="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                Registrar-se 
+                <svg class="w-4 h-4 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                </svg>
+            </a>
+        </p>
+        <p class="text-gray-500 dark:text-gray-400">
+            <a href="/auth/login" class="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                Entrar 
+                <svg class="w-4 h-4 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                </svg>
+            </a>
+        </p>
+
+
+        <h2 class="border-b mb-2 mt-5">Cadastro:</h2>
+        <p class="text-gray-500 dark:text-gray-400">
+            <a href="/metadata/cadastro-metadata" class="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                Cadastrar Metadados 
+                <svg class="w-4 h-4 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                </svg>
+            </a>
+        </p>
+        <p class="text-gray-500 dark:text-gray-400">
+            <a href="/film/cadastro-filme" class="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                Cadastrar Filme 
+                <svg class="w-4 h-4 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                </svg>
+            </a>
+        </p>
+        <p class="text-gray-500 dark:text-gray-400">
+            <a href="/serie/cadastro-serie" class="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                Cadastrar Serie 
+                <svg class="w-4 h-4 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                </svg>
+            </a>
+        </p>
+
+        <h2 class="border-b mb-2 mt-5">Listagem:</h2>
+        <p class="text-gray-500 dark:text-gray-400">
+            <a href="/film/page/0" class="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                Lista de Filmes - pagina 0 (20)
+                <svg class="w-4 h-4 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                </svg>
+            </a><br>
+            parar assistir basta acessar: <b>/film/nome-do-filme</b>
+
+        </p><br>
+        <p class="text-gray-500 dark:text-gray-400">
+            <a href="/serie/page/0" class="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                Lista de Series - pagina 0 (20)
+                <svg class="w-4 h-4 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                </svg>
+            </a>
+            <br>
+            //Quantidade de Temporadas: <b>/serie/nome-da-serie/season</b> <br>
+            //Episodios por temporada: <b>/serie/nome-da-serie/season/1</b> <br>
+            //Assistir serie: <b>/serie/nome-da-serie/season/1/episode/1</b> <br>
+        </p>
+            
+        <button onclick="sair()" class="bg-red-600 hover:shadow-md hover:bg-red-500 text-white px-4 py-1 rounded-md  ml-auto block">Sair</button>
+        <script>
+            function sair(){
+                function removerCookie(nome) {
+                    document.cookie = `${nome}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                }
+
+                removerCookie('token');
+
+                window.location.href = '/auth/login'
+            }
+        </script>
+    
+    </section>
+    
+</body>
+</html>
+

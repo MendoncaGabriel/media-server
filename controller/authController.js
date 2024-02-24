@@ -29,7 +29,7 @@ exports.register = async (req, res) =>{
         res.status(200).json({msg: 'Usuario registrado com sucesso!: ' + doc, token})
     })
     .catch((err)=>{
-        res.status(200).json({msg: 'Erro ao registar usuario: ' + err})
+        res.status(400).json({msg: 'Erro ao registar usuario: ' + err})
     })
 }
 
@@ -48,4 +48,11 @@ exports.login = async (req, res) => {
 
 
     res.status(200).json({msg: 'Autenticação realizada com sucesso!', token})
+}
+
+exports.loginFront = async (req, res) => {
+    res.render('login')
+}
+exports.registerFront = async (req, res) => {
+    res.render('register')
 }

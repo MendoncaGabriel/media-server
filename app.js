@@ -11,7 +11,7 @@ var authRouter = require('./routes/auth');
 const filmsRouter = require('./routes/films')
 const serieRouter = require('./routes/serie')
 const metadataRouter = require('./routes/metadata')
-const adminRouter = require('./routes/admin')
+
 
 var app = express();
 
@@ -33,7 +33,7 @@ app.use('/auth', authRouter)
 app.use('/film', filmsRouter);
 app.use('/serie', serieRouter)
 app.use('/metadata', metadataRouter)
-app.use('/admin', adminRouter)
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
