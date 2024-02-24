@@ -36,11 +36,17 @@ exports.update = async (req, res) => {
         if (req.file && previousCoverPath) {
             try {
                 await fs.unlink(path.join(__dirname, '../public/covers', previousCoverPath));
-                res.status(200).json({ msg: 'Atualizado com sucesso!', data: updatedMetadata });
+                return res.status(200).json({ msg: 'Atualizado com sucesso!', data: updatedMetadata });
             } catch (unlinkError) {
                 console.error('Erro ao excluir a imagem anterior:', unlinkError);
-                res.status(404).json({msg: 'Documento não encontrado para o ID fornecido.' });
+                return res.status(404).json({msg: 'Documento não encontrado para o ID fornecido.' });
             }
+        }
+
+        if (updatedMetadata) {
+            return res.status(200).json({ msg: 'Atualizado com sucesso!', data: updatedMetadata });
+        } else {
+            return res.status(404).json({msg: 'Documento não encontrado para o ID fornecido.' });
         }
 
 
