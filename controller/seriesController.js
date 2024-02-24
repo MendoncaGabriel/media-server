@@ -75,3 +75,23 @@ exports.numberOfSeasons = async (req, res) => {
       res.status(500).json({ message: 'Erro interno do servidor' });
   }
 };
+
+exports.register = async (req, res) => {
+  try{
+    const newSerie = new Serie({
+    name: req.body.name,
+    path: req.file.filename,
+    metadataId: req.body.metadataId,
+    season: req.body.season,
+    episode: req.body.episode
+  })
+
+    newSerie.save()
+  
+    console.log('Recebido upload de vídeo:', req.file);
+    res.status(200).json('serie salva!');
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao salvar serie' });
+  }
+}

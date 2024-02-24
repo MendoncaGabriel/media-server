@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 const seriesController = require('../controller/seriesController')
+const uploadSeries = require('../middleware/uploadSerie')
 
+router.post('/register', uploadSeries, seriesController.register);
 
-
+//front end
 router.get('/:name/season/:season/episode/:episode', seriesController.series );
 router.get('/page/:page', seriesController.pagination);
 

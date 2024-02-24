@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Filmes</title>
+    <title>Cadastro de Serie</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded shadow-md w-full max-w-5xl">
-        <h1 class="text-2xl font-bold mb-6 text-center">Cadastro de Filmes</h1>
+        <h1 class="text-2xl font-bold mb-6 text-center">Cadastro de Serie</h1>
 
-        <form action="/film/register" method="post" enctype="multipart/form-data" class="space-y-4">
+        <form action="/serie/register" method="post" enctype="multipart/form-data" class="space-y-4">
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-600">Nome:</label>
                 <input type="text" id="name" name="name" required class="mt-1 p-2 w-full border rounded">
@@ -18,9 +18,18 @@
 
             <div>
                 <label for="video" class="block text-sm font-medium text-gray-600">Arquivo:</label>
-                <input type="file" id="video" name="video" accept="video/*" class="mt-1 p-2 w-full border rounded">
+                <input type="file" id="video" required name="video" accept="video/*" class="mt-1 p-2 w-full border rounded">
             </div>
-            
+
+            <div>
+                <label for="season" class="block text-sm font-medium text-gray-600">Temporada:</label>
+                <input type="text" id="season" name="season"  required class="mt-1 p-2 w-full border rounded">
+            </div>
+            <div>
+                <label for="episode" class="block text-sm font-medium text-gray-600">Episodio:</label>
+                <input type="text" id="episode" name="episode"  required class="mt-1 p-2 w-full border rounded">
+            </div>
+
             <div class="relative">
                 <label for="metadata"  class="block text-sm font-medium text-gray-600">Metadata:</label>
                 <select
