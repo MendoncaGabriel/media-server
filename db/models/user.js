@@ -15,8 +15,12 @@ const userSchema = new mongoose.Schema({
     },
     able:{
         type: Boolean,
+        default: true
+    },
+    admin:{
+        type: Boolean,
         default: false
-    }
+    },
 })
 
 module.exports = mongoose.model('user', userSchema)

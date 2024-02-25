@@ -14,10 +14,10 @@ router.get('/cadastro-filme',checkToken, async function(req, res) {
 })
 
 router.post('/register',checkToken, uploadFilm, filmsControler.register);
-router.get('/:name',checkToken, filmsControler.films);
 router.get('/page/:page',checkToken, filmsControler.pagination);
 
-  
+
+router.get('/:name',checkToken, filmsControler.films);
   
 
 module.exports = router;

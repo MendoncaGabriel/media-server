@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Temporada</title>
+    <link rel="shortcut icon" href="/images/ico.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-5xl">
+        <h1 class="text-2xl font-bold mb-6 text-center">Cadastro de temporada</h1>
+
+        <form action="/serie/newSeason" method="post"  class="space-y-4">
+            <!-- serieId -->
+            <div class="relative">
+                <label for="serie"  class="block text-sm font-medium text-gray-600">Serie:</label>
+                <select
+                    id="serie"
+                    name="serieId"
+                    class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                >
+                <option value="" disabled selected hidden>Selecione uma opção</option>
+
+                <% if (typeof serieList !== 'undefined') { %>
+                    <% serieList.map(element => { %>
+                        <option value="<%= element._id %>"><%= element.name %></option>
+                <%  })  
+                } %>
+                
+                </select>
+                <a href="/serie/newSerie"  class="text-blue-600 text-xs">Cadastrar nova serie</a>
+            </div>
+
+            <!-- title -->
+            <div>
+                <label for="title" class="block text-sm font-medium text-gray-600">Titulo:</label>
+                <input type="text" id="title" name="title" required class="mt-1 p-2 w-full border rounded">
+            </div>
+            
+            <!-- seasonNumber -->
+            <div>
+                <label for="seasonNumber" class="block text-sm font-medium text-gray-600">Temporada:</label>
+                <input type="number" id="seasonNumber" name="seasonNumber" required class="mt-1 p-2 w-full border rounded">
+            </div>
+
+
+
+            <button type="submit"  class="bg-blue-500 text-white p-2 rounded w-full">Cadastrar</button>
+        </form>
+
+    </div>
+
+
+</body>
+</html>

@@ -6,6 +6,7 @@ const Film = require('../db/models/films')
 exports.films = async (req, res) => {
   const name = req.params.name
   const pathFilm = await Film.findOne({name: name })
+
   
   try {
 

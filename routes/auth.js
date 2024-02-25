@@ -76,10 +76,12 @@ async function checkLogin(req, res, next){
     next()
 }
 
+//Front End - ADMIN
 routes.get('/register', authController.registerFront)
 routes.get('/login', authController.loginFront)
 
 
+//Back End - USER
 routes.post('/register', validationRegister, authController.register)
 routes.post('/login', checkLogin, authController.login)
 

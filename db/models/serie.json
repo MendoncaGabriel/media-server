@@ -1,0 +1,159 @@
+//Home de Series - entregar 20x
+{
+    "_id": "265165156153161561561",
+    "title": "Game of Throns",
+    "sinopse": "texto",
+    "cover": "capa.png",
+    "amountSe": 10,
+}
+
+
+//Pagina da serie: entregar tudo episodios
+
+{
+    "season": [
+        {   
+            "id": "651651651",
+            "se": "1",
+            "title": "temporada 1",
+            "episode": [
+                {
+                    "id": "651651651",
+                    "episode": "1",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/gameofthone/651651651"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "2",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "1",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/gameofthone/651651651"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "2",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "1",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/gameofthone/651651651"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "2",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "1",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/gameofthone/651651651"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "2",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "1",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/gameofthone/651651651"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "2",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/"
+                },
+            ]
+        }
+        {   
+            "id": "651651651",
+            "se": "2",
+            "title": "temporada 1",
+            "episode": [
+                {
+                    "id": "651651651",
+                    "episode": "1",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/gameofthone/651651651"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "2",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "1",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/gameofthone/651651651"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "2",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "1",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/gameofthone/651651651"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "2",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "1",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/gameofthone/651651651"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "2",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "1",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/gameofthone/651651651"
+                },
+                {
+                    "id": "651651651",
+                    "episode": "2",
+                    "title": "o inverso esta chegandop",
+                    "path": "/serie/"
+                },
+            ]
+        }
+
+    ],
+}
+
+// 20 series na home
+series/20
+
+// todas as temporadas com os episodios dentro
+series/id
+
+
