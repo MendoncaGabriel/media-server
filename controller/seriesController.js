@@ -1,28 +1,14 @@
 const fs = require('fs');
+const path = require('path');
 const rangeParser = require('range-parser');
-const Serie = require('../db/models/series')
 
+const Serie = require('../db/models/serie')
+const Metadata = require('../db/models/metadata')
 
+//ASSISTIR
 exports.play = async (req, res) => {
   const id = req.params.id;
-  const seasonNumber = req.params.se;
-  const episodeNumber = req.params.ep;
-
- 
-  const pathSerie = await Serie.findById(id);
-
-  if (!pathSerie) {
-    return res.status(404).json({ error: 'Série não encontrada.' });
-  }
-
-  //buscar temporada
-  const season = pathSerie.seasons.find(e => e.seasonNumber == seasonNumber);
-  
-  //buscar episodio
-  const episode = season.episodes.find(e => e.episodeNumber == episodeNumber);
-  
-  console.log(episode);
-
+  const episode = await Serie.findById(id);
   if(!episode){
     return res.status(404).json({ error: 'Episodio não encontrado' });
   }
@@ -30,7 +16,7 @@ exports.play = async (req, res) => {
 
   try {
 
-    const videoPath = 'videos/' + episode.video 
+    const videoPath = 'videos/series/' + episode.file 
     const stat = fs.statSync(videoPath);
     const fileSize = stat.size;
 
@@ -58,67 +44,6 @@ exports.play = async (req, res) => {
   }
 }
 
-// exports.pagination = async (req, res) => {
-//   const page = req.params.page
-//   const seriesList = await Serie.distinct('name');
-//   const seriesPage = seriesList.slice(page * 10, 40); 
-//   res.status(200).json(seriesPage);
-// }
-
-// exports.episodesPerSeason = async (req, res) => {
-//   const name = req.params.name
-//   const season = req.params.season
-
-
-//   const seriesList = await Serie.find({name: name, season: season});
-
-//   res.status(200).json(seriesList);
-// }
-
-// exports.numberOfSeasons = async (req, res) => {
-//   const nomeDaSerie = req.params.name;
-
-//   try {
-//     const temporadasDistintas = await Serie.distinct('season', { name: nomeDaSerie });
-
-//     const numeroDeTemporadas = temporadasDistintas.length;
-
-//     const resultado = { 'numeroDeTemporadas': numeroDeTemporadas };
-//     res.json(resultado);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Erro interno do servidor' });
-//   }
-// };
-
-
-
-
-
-
-//NOVA SERIE
-exports.saveSerie = async (req, res) => {
-  console.log(req.body)
-  try{
-
-    const newSerie = new Serie({
-      name: req.body.name,
-      cover: req.file.filename,
-      sinopse: req.body.sinopse,
-      episodes: [], 
-    })
-
-    await newSerie.save()
-  
-    console.log('Serie Salva com sucesso!');
-    res.status(200).json('serie salva!');
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro ao salvar serie' });
-  }
-}
-
-
 //PAGINAÇÃO DE SERIES
 exports.page = async (req, res) => {
   try {
@@ -131,7 +56,7 @@ exports.page = async (req, res) => {
     const itemsPerPage = 10;
     const skip = (page - 1) * itemsPerPage;
 
-    const seriesPage = await Serie.find().skip(skip).limit(itemsPerPage);
+    const seriesPage = await Metadata.find().skip(skip).limit(itemsPerPage);
 
     res.status(200).json(seriesPage);
   } catch (error) {
@@ -140,82 +65,145 @@ exports.page = async (req, res) => {
   }
 };
 
+//SALVAR ARQUIVOS NO BANCO DE DADOS
+exports.saveSerie = async (req, res)=>{
+  const pasta = path.join(__dirname, '..', 'videos', 'series');
+  const parseFilename = (filename) => {
+      const regex = /^(?<type>serie|filme)\+(?<name>[^+]+)(?:\+se(?<season>\d+))?(?:\+ep(?<episode>\d+))?\.(?<extension>mp4)$/;
+      
+      const match = filename.match(regex);
+      
+      if (match) {
+          const { type, name, season, episode, extension } = match.groups;
+          
+          // Remover traços do nome
+          const cleanedName = name.replace(/-/g, ' ');
+          
+          // Criar a propriedade "file" com o nome original
+          const file = `${type}+${name}+se${season}+ep${episode}.${extension}`;
+          
+          return {
+              type,
+              name: cleanedName,
+              season: season ? parseInt(season) : null,
+              episode: episode ? parseInt(episode) : null,
+              extension,
+              file,
+          };
+      } else {
 
-//NOVO EPISODIOS
-exports.addEpisodeToSerie = async (req, res) => {
+          return filename; 
+      }
+  }
+
+
+  // Lê o conteúdo do diretório
+  let arquivosDaPasta = [];
+  async function listarArquivos(pasta) {
+      return new Promise((resolve) => {
+        fs.readdir(pasta, (err, arquivos) => {
+          if (err) {
+            return res.status(404).send({msg: 'Erro ao ler o diretório:', err});
+          }
+    
+          arquivos.forEach((arquivo) => {
+              arquivosDaPasta.push(arquivo);
+          });
+    
+          resolve();
+        });
+      });
+  }
+  await listarArquivos(pasta)
+    
+
+  //transformar nome dos arquivos em json
+  const arquivosJson = arquivosDaPasta.map(element =>{
+      return parseFilename(element)
+  })
+
+
+  const series = await Serie.find();
+  const cadastrar = []
+  let ocorrencia = false
+  
+
+  //verificarer se itens precisam ser cadastrados 
+  arquivosJson.forEach(async element =>{
+      const registro = series.find(e => e.file == element.file)
+
+      if(!registro){
+          //verificar se todos as propriedades foram reconhecidas
+          if(!element.type || element.type !== 'serie' || !element.name || !element.season || !element.episode){
+              return ocorrencia = element
+          }else{
+              cadastrar.push(element)
+          }
+      }
+  })
+
+
+  if(ocorrencia != false){
+      return res.status(422).json({item: ocorrencia, msg: 'nome do arquivo esta incorreto ( serie+nome-da-serie+se1+ep1.mp4 )'});
+  }
+
+
+  //salvar itens no banco de dados
+  if(cadastrar.length > 0){
+      const itensCadastrados = []
+
+      cadastrar.forEach(async(element)=>{
+          itensCadastrados.push(element)
+          const newEpisode = new Serie({
+              type: element.type,
+              name: element.name,
+              season: element.season,
+              episode: element.episode,
+              extension: element.extension,
+              file: element.file,
+          })
+          await newEpisode.save()
+  
+      })
+
+      return res.status(200).json({msg: 'Itens Cadastrados', itensCadastrados});
+  }else{
+      return res.status(200).json({msg: 'Nenhum video foi salvo'});
+  } 
+}
+
+exports.getData = async (req, res) => {
   try {
-    // ID da série e dados do novo episódio do corpo da requisição
-    const { serieId, seasonNumber, episodeNumber, title } = req.body;
+    const id = req.params.id;
 
-    // Encontre a série pelo ID
-    const serie = await Serie.findById(serieId);
+    // Fetch metadata based on id
+    const metadataSerie = await Metadata.findById(id);
 
-    if (!serie) {
-      return res.status(404).json({ error: 'Série não encontrada.' });
+    if (!metadataSerie) {
+      return res.status(404).json({ error: 'Metadados não encontrados' });
     }
 
-    // Crie um novo episódio
-    const newEpisode = {
-      episodeNumber,
-      title,
-      video: req.file.filename,
-    };
+    // Use the actual name directly without JSON.stringify
+    const episodes = await Serie.find({ name: metadataSerie.name }).exec();
+    const organizedData = episodes.reduce((acc, episode) => {
+      const seasonKey = `${episode.season}`;
+      acc[seasonKey] = acc[seasonKey] || [];
+      acc[seasonKey].push({
+         _id: episode._id,
+        // type: episode.type,
+        // name: episode.name,
+        // season: episode.season,
+        episode: episode.episode,
+        // extension: episode.extension,
+        file: episode.file,
+        __v: episode.__v
+      });
+      return acc;
+    }, {});
 
-    // Encontre a temporada correspondente pelo seasonNumber
-    const targetSeason = serie.seasons.find((season) => season.seasonNumber === Number(seasonNumber));
-
-    if (!targetSeason) {
-      return res.status(404).json({ error: 'Temporada não encontrada.' });
-    }
-
-    // Adicione o novo episódio à temporada correspondente
-    targetSeason.episodes.push(newEpisode);
-
-    // Salve a série novamente para garantir que as alterações sejam persistidas
-    const updatedSerie = await serie.save();
-
-    // Responda com a série atualizada
-    res.status(200).json(updatedSerie);
+    res.json({ metadata: metadataSerie, season: organizedData  });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Erro interno do servidor.' });
+    res.status(500).json({ error: 'Erro do Servidor Interno' });
   }
 };
-
-
-//NOVA TEMPORADA
-exports.addSeasonToSerie = async (req, res) => {
-  try {
-    const { serieId, seasonNumber, title } = req.body;
-    console.log(serieId, seasonNumber, title)
-
-    // Encontrar a série pelo ID
-    const serie = await Serie.findById(serieId);
-
-    if (!serie) {
-      return res.status(404).json({ error: 'Série não encontrada.' });
-    }
-
-    // Criar um objeto de temporada
-    const newSeason = {
-      seasonNumber,
-      title,
-      episodes: [], 
-    };
-
-    // Adicionar a temporada ao array de temporadas da série
-    serie.seasons.push(newSeason);
-
-    // Salvar as alterações no banco de dados
-    await serie.save();
-
-    res.status(201).json({ message: 'Temporada adicionada com sucesso.', data: newSeason });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro interno do servidor.' });
-  }
-};
-
-
-
-//ASSISTIR

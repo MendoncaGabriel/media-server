@@ -9,7 +9,7 @@ const SerieSchema = new mongoose.Schema({
     file: String,
 });
 
-const Serie = mongoose.model('SerieTeste', SerieSchema);
+const Serie = mongoose.model('serie', SerieSchema);
 
 module.exports = Serie;
 

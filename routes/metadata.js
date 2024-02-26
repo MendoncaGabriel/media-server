@@ -1,22 +1,20 @@
 const express = require('express')
 const router = express.Router()
 const metadataController = require('../controller/metadataController')
-const uploadCover = require('../middleware/uploadCover');
+const uploadImage = require('../middleware/uploadImage');
 const checkToken = require('../middleware/checkToken')
 
-
-
-router.post('/update', checkToken, uploadCover, metadataController.update);
-
-
-router.get('/cadastro-metadata', checkToken, async function(req, res) {
-    res.render('registerMetadata')
+router.get('/teste', (req, res)=>{
+    res.render('teste')
 })
-router.get('/update-metadata', checkToken, metadataController.renderUpdate);
+
+router.post('/register',uploadImage, metadataController.register);
+
 router.get('/:name', checkToken, metadataController.get);
 
-router.post('/register', checkToken, uploadCover, metadataController.register);
+router.post('/update', checkToken, uploadImage, metadataController.update);
 
 router.post('/update-metadata-id', checkToken, metadataController.getId);
+
 
 module.exports = router;

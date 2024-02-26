@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulário de Série</title>
+</head>
+<body>
+  <h1>Formulário de Série</h1>
+
+  <form action="/metadata/register" method="post" enctype="multipart/form-data">
+    <label for="name">Nome:</label>
+    <input type="text" id="name" name="name" required value="metadata de serie teste">
+    <br>
+
+    <label for="type">Tipo:</label>
+    <input type="text" id="type" name="type" required value="serie">
+    <br>
+
+    <label for="releaseYear">Ano de Lançamento:</label>
+    <input type="text" id="releaseYear" name="releaseYear" required value="1997">
+    <br>
+
+    <label for="genre">Gênero:</label>
+    <input type="text" id="genre" name="genre" required value="aventura">
+    <br>
+
+    <label for="creator">Criador:</label>
+    <input type="text" id="creator" name="creator" required value="nome do criador">
+    <br>
+
+    <label for="rating">Avaliação:</label>
+    <input type="text" id="rating" name="rating" required value="5">
+    <br>
+
+    <label for="synopsis">Sinopse:</label>
+    <textarea id="synopsis" name="synopsis" required>sinopse de teste, texto aqui</textarea>
+    <br>
+
+    <label for="image">Imagem:</label>
+    <input type="file" id="image" name="image" accept="image/*" >
+    <br>
+
+    <input type="submit" value="Enviar">
+  </form>
+</body>
+</html>

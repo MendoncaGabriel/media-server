@@ -4,20 +4,22 @@ SECRET=###
 
 
 
-//auth/register
-//auth/login
-
-//Assistr fime: film/nome-do-filme
-//Listar Filmes: film/page/0
-
-//Listar series: serie/page/0
-//Quantidade de temporadas: serie/nome-da-serie/season
-//Episodios por temporada: serie/nome-da-serie/season/1
-//Assistir serie: serie/nome-da-serie/season/1/episode/1
 
 
 
-//front end - cadastro
-/admin/cadastro-serie
-/admin/cadastro-filme
-/admin/cadastro-metadata
+//cadastrar series automaticamente
+http://localhost:3000/serie/register (get)
+
+//cadastrar metadados da serie
+http://localhost:3000/metadata/register (post)
+
+//listar series cadastradas
+http://localhost:3000/serie/page/1 (get)
+
+//buscar metadados e conteudos da serie
+http://localhost:3000/serie/65dccc279363b19a3131908f (get)
+
+//assistir episodio da serie
+http://localhost:3000/serie/player/65dccc279363b19a3131908f (get)
+
+

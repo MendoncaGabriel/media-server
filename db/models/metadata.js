@@ -5,12 +5,6 @@ const metadataSchema = new mongoose.Schema({
         type:String,
         required: true
     },
-    cover:{
-        type: String,
-    },
-    type:{
-        type: String
-    },
     releaseYear: {
         type: Number,
     },
@@ -24,6 +18,9 @@ const metadataSchema = new mongoose.Schema({
         type: Number,
     },
     synopsis: {
+        type: String,
+    },
+    image:{
         type: String,
     }
 })

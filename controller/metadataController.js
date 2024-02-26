@@ -1,7 +1,29 @@
 
 const fs = require('fs/promises');
-const Metadata = require('../db/models/metadata')
 const path = require('path')
+const Metadata = require('../db/models/metadata')
+
+
+
+exports.register = async (req, res) => {
+    const imageCover = req.file ? req.file.filename : ''
+    const { name, type, releaseYear, genre, creator, rating, synopsis } = req.body;
+
+    try {
+        const newMetaData = new Metadata({ name, type, releaseYear, genre, creator, rating, synopsis, image: imageCover });
+        const doc = await newMetaData.save();
+
+        if (doc) {
+            res.status(200).json({msg: 'Cadastro realizado com sucesso!', doc});
+        }
+    } catch (error) {
+
+        res.status(500).send(error.message);
+    }
+}
+
+
+
 
 exports.update = async (req, res) => {
     try {
@@ -56,31 +78,7 @@ exports.update = async (req, res) => {
         console.error(error);
         res.status(500).json(error.message || 'Ocorreu um erro durante a atualização.');
     }
-};
-
-
-
-exports.register = async (req, res) => {
-    try {
-        const { name, type, releaseYear, genre, creator, rating, synopsis } = req.body;
-
-        // Adicione o caminho do arquivo ao objeto req.body
-        const coverPath = req.file ? req.file.path : ''; // Certifique-se de que req.file está disponível
-
-        // Extraia apenas o nome do arquivo do caminho
-        const coverFileName = req.file ? req.file.filename : '';
-
-        const newMetaData = new Metadata({ name, type, releaseYear, genre, creator, rating, synopsis, cover: coverFileName });
-
-        const newMetadata = await newMetaData.save();
-
-        if (newMetadata) {
-            res.send('Cadastro realizado com sucesso! ' + newMetadata);
-        }
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-};
+}
 
 exports.get = async  (req, res) => {
     const name = req.params.name
@@ -113,12 +111,9 @@ exports.getId = async (req, res) => {
         console.error('Error in getId:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-};
-
+}
 
 exports.renderUpdate = async (req, res) =>{
     const metadataList = await Metadata.find().select('name _id');
-    
     res.render('updateMetadata', {metadataList: metadataList})
 }
-
