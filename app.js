@@ -8,6 +8,7 @@ require('./db/connect')
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
+var registerRouter = require('./routes/register');
 
 const serieRouter = require('./routes/serie')
 
@@ -31,6 +32,7 @@ app.use(cors())
 app.use('/', indexRouter);
 app.use('/auth', authRouter)
 app.use('/serie', serieRouter)
+app.use('/register', registerRouter)
 
 
 

@@ -1,6 +1,7 @@
 # Ignorar arquivos dentro das pastas, mas não as pastas em si
 media/films/*
 media/series/*
+videos/*
 
 # Ignorar a pasta node_modules
 node_modules
