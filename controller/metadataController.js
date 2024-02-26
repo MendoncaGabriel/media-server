@@ -10,7 +10,7 @@ exports.register = async (req, res) => {
     const { name, type, releaseYear, genre, creator, rating, synopsis } = req.body;
 
     try {
-        const newMetaData = new Metadata({ name, type, releaseYear, genre, creator, rating, synopsis, image: imageCover });
+        const newMetaData = new Metadata({ name, type, releaseYear, genre, creator, rating, synopsis, image:  '/images/' + imageCover });
         const doc = await newMetaData.save();
 
         if (doc) {

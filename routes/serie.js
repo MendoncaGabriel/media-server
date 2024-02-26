@@ -1,14 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-
 const seriesController = require('../controller/seriesController')
-
-const uploadImage = require('../middleware/uploadImage')
-const uploadVideo = require('../middleware/uploadVideo')
-
-
-
 
 
 //CADASTRAR ARQUIVOS DE SERIE
@@ -24,7 +17,4 @@ router.get('/page/:page', seriesController.page)
 router.get('/:id', seriesController.getData)
 
 
-
-
 module.exports = router;
-  

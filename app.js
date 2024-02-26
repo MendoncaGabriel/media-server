@@ -7,6 +7,7 @@ require('./db/connect');
 
 const authRouter = require('./routes/auth');
 const serieRouter = require('./routes/serie');
+const filmRouter = require('./routes/film');
 const metadataRouter = require('./routes/metadata');
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routes
 app.use('/auth', authRouter);
 app.use('/serie', serieRouter);
+app.use('/film', filmRouter);
 app.use('/metadata', metadataRouter);
 
 // 404 handler

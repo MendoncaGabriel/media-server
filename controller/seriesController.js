@@ -56,7 +56,7 @@ exports.page = async (req, res) => {
     const itemsPerPage = 10;
     const skip = (page - 1) * itemsPerPage;
 
-    const seriesPage = await Metadata.find().skip(skip).limit(itemsPerPage);
+    const seriesPage = await Metadata.find({type: "serie"}).skip(skip).limit(itemsPerPage);
 
     res.status(200).json(seriesPage);
   } catch (error) {
@@ -184,6 +184,7 @@ exports.getData = async (req, res) => {
     }
 
     // Use the actual name directly without JSON.stringify
+
     const episodes = await Serie.find({ name: metadataSerie.name }).exec();
     const organizedData = episodes.reduce((acc, episode) => {
       const seasonKey = `${episode.season}`;
@@ -196,7 +197,7 @@ exports.getData = async (req, res) => {
         episode: episode.episode,
         // extension: episode.extension,
         file: episode.file,
-        __v: episode.__v
+        // __v: episode.__v
       });
       return acc;
     }, {});
