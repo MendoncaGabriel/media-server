@@ -1,27 +1,38 @@
+<section id="video" class="hidden aspect-video p-5">
+    <video id="videoElement" class="aspect-video" controls autoplay></video>
+</section>
 
-    
-    
-    
-    <ul>
-        <% Object.keys(season).sort((a, b) => a - b).forEach(pageNumber => { %>
-            <li class="my-2 py-3 px-4">
-                <button class="shadow-sm bg-gray-100 px-4 block w-full text-left py-2" onclick="toggleList('<%= pageNumber %>')">
-                    <strong>Temporada <%= pageNumber %></strong>
-                </button>
-                <ul id="season<%= pageNumber %>" class="overflow-hidden h-0">
-                    <% season[pageNumber].sort((a, b) => a.episode - b.episode).forEach(episode => { %>
-                        <li class="w-full">
-                            <a href="/serie/player/<%= episode._id %>" target="_blank" class="hover:bg-gray-200 w-full block h-full px-4 py-2">
-                                Episode <%= episode.episode %>
-                            </a>
-                        </li>
-                    <% }); %>
-                </ul>
-            </li>
-        <% }); %>
-    </ul>
-    
-    <script>
+<ul>
+    <% Object.keys(season).sort((a, b) => a - b).forEach(pageNumber => { %>
+        <li class="my-2 py-3 px-4">
+            <button class="shadow-sm bg-gray-100 px-4 block w-full text-left py-2" onclick="toggleList('<%= pageNumber %>')">
+                <strong>Temporada <%= pageNumber %></strong>
+            </button>
+            <ul id="season<%= pageNumber %>" class="overflow-hidden h-0">
+                <% season[pageNumber].sort((a, b) => a.episode - b.episode).forEach(episode => { %>
+                    <li class="w-full">
+                        <button onclick="openVideo('/serie/player/<%= episode._id %>', this)" class="hover:bg-gray-200 text-left h-full px-4 py-2 block w-full ">
+                            Episodio <%= episode.episode %>
+                        </button>
+                    </li>
+                <% }); %>
+            </ul>
+        </li>
+    <% }); %>
+</ul>
+
+<script>
+    function openVideo(link, button) {
+        button.classList.add('bg-green-200');
+
+        document.getElementById('video').classList.remove('hidden')
+        // Atualiza o src do elemento de vídeo
+        document.getElementById('videoElement').src = link;
+
+        // Reinicia o vídeo para garantir que ele seja recarregado
+        document.getElementById('videoElement').load();
+    }
+
     function toggleList(pageNumber) {
         const seasonList = document.getElementById('season' + pageNumber);
         if (seasonList.classList.contains('h-0')) {
@@ -34,6 +45,4 @@
             seasonList.classList.add('h-0');
         }
     }
-    </script>
-    
-
+</script>

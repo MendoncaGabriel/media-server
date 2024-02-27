@@ -70,7 +70,7 @@ exports.saveFilm = async (req, res) => {
   const pasta = path.join(__dirname, '..', 'videos', 'films');
   
   const parseFilename = (filename) => {
-    const regex = /^(?<type>serie|film)\+(?<name>[^+]+)\.(?<extension>mp4)$/;
+    const regex = /^(?<type>serie|film)\+(?<name>[^+]+)\.(?<extension>(mp4|mkv|rmvb))$/;
 
     const match = filename.match(regex);
 

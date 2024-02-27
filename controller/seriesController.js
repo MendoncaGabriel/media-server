@@ -68,33 +68,31 @@ exports.page = async (req, res) => {
 //SALVAR ARQUIVOS NO BANCO DE DADOS
 exports.saveSerie = async (req, res)=>{
   const pasta = path.join(__dirname, '..', 'videos', 'series');
+
   const parseFilename = (filename) => {
-      // const regex = /^(?<type>serie|filme)\+(?<name>[^+]+)(?:\+se(?<season>\d+))?(?:\+ep(?<episode>\d+))?\.(?<extension>mp4)$/;
-      const regex = /^(?<type>serie|filme)\+(?<name>[^+]+)(?:\+se(?<season>\d+))?(?:\+ep(?<episode>\d+))?\.(?<extension>(mp4|mkv))$/;
-
-      const match = filename.match(regex);
+    const regex = /^(?<type>serie|filme)\+(?<name>[^+]+)(?:\+se(?<season>\d+))?(?:\+ep(?<episode>\d+))?\.(?<extension>(mp4|mkv|rmvb))$/;
+    const match = filename.match(regex);
+    
+    if (match) {
+      const { type, name, season, episode, extension } = match.groups;
       
-      if (match) {
-          const { type, name, season, episode, extension } = match.groups;
-          
-          // Remover traços do nome
-          const cleanedName = name.replace(/-/g, ' ');
-          
-          // Criar a propriedade "file" com o nome original
-          const file = `${type}+${name}+se${season}+ep${episode}.${extension}`;
-          
-          return {
-              type,
-              name: cleanedName,
-              season: season ? parseInt(season) : null,
-              episode: episode ? parseInt(episode) : null,
-              extension,
-              file,
-          };
-      } else {
-
-          return filename; 
-      }
+      // Remover traços do nome
+      const cleanedName = name.replace(/-/g, ' ');
+      
+      // Criar a propriedade "file" com o nome original
+      const file = `${type}+${name}+se${season}+ep${episode}.${extension}`;
+      
+      return {
+        type,
+        name: cleanedName,
+        season: season ? parseInt(season) : null,
+        episode: episode ? parseInt(episode) : null,
+        extension,
+        file,
+      };
+    } else {
+      return filename; 
+    }
   }
 
 
@@ -120,32 +118,45 @@ exports.saveSerie = async (req, res)=>{
 
   //transformar nome dos arquivos em json
   const arquivosJson = arquivosDaPasta.map(element =>{
-      return parseFilename(element)
+    return parseFilename(element)
   })
 
 
   const series = await Serie.find();
   const cadastrar = []
+  const apagar = []
   let ocorrencia = false
   
 
   //verificarer se itens precisam ser cadastrados 
   arquivosJson.forEach(async element =>{
-      const registro = series.find(e => e.file == element.file)
+    const registro = series.find(e => e.file == element.file)
 
-      if(!registro){
-          //verificar se todos as propriedades foram reconhecidas
-          if(!element.type || element.type !== 'serie' || !element.name || !element.season || !element.episode){
-              return ocorrencia = element
-          }else{
-              cadastrar.push(element)
-          }
+    if(!registro){
+      //verificar se todos as propriedades foram reconhecidas
+      if(!element.type || element.type !== 'serie' || !element.name || !element.season || !element.episode){
+        return ocorrencia = element
+      }else{
+        cadastrar.push(element)
       }
+    }
   })
 
 
+  // Verificar vídeos salvos no banco de dados mas não salvos em arquivos
+  const videosNoArquivosJson = series.filter(element => !arquivosJson.some(e => e.file === element.file));
+
+  if (videosNoArquivosJson.length > 0) {
+    // Usando Promise.all para lidar com operações assíncronas
+    await Promise.all(videosNoArquivosJson.map(async (element) => {
+      await Serie.findByIdAndDelete(element._id);
+    }));
+  }
+
+
+
   if(ocorrencia != false){
-      return res.status(422).json({item: ocorrencia, msg: 'nome do arquivo esta incorreto ( serie+nome-da-serie+se1+ep1.mp4 )'});
+    return res.status(422).json({item: ocorrencia, msg: 'nome do arquivo esta incorreto ( serie+nome-da-serie+se1+ep1.mp4 )'});
   }
 
 
@@ -168,8 +179,12 @@ exports.saveSerie = async (req, res)=>{
       })
 
       return res.status(200).json({msg: 'Itens Cadastrados', itensCadastrados});
-  }else{
-      return res.status(200).json({msg: 'Nenhum video foi salvo'});
+  }else if(videosNoArquivosJson.length > 0){
+
+    return res.status(200).json({msg: 'Alguns dados foram apagados na base de dados pois não estavam salvas em arquivo'});
+  }
+  else{
+    return res.status(200).json({msg: 'Nenhum video foi salvo'});
   } 
 }
 
