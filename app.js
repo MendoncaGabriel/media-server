@@ -33,9 +33,15 @@ app.use('/film', filmRouter);
 app.use('/metadata', metadataRouter);
 
 // 404 handler
+
 app.use((req, res, next) => {
   next(createError(404));
 });
+
+
+app.get('/', (req, res) => {
+  res.send(':)')
+ });
 
 // Server setup
 const PORT = 3001;
