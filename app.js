@@ -34,9 +34,9 @@ app.use('/', indexRouter);
 
 // 404 handler
 
-app.use((req, res, next) => {
-  next(createError(404));
-});
+// app.use((req, res, next) => {
+//   next(createError(404));
+// });
 
 
 // Server setup
