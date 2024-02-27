@@ -14,7 +14,8 @@ exports.register = async (req, res) => {
         const doc = await newMetaData.save();
 
         if (doc) {
-            res.status(200).json({msg: 'Cadastro realizado com sucesso!', doc});
+            res.render('metadataRegister', {msg: 'Cadastro realizado com sucesso!', doc})
+            // res.status(200).json({msg: 'Cadastro realizado com sucesso!', doc});
         }
     } catch (error) {
 
@@ -27,7 +28,7 @@ exports.register = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        const {id, name, cover, type, synopsis, rating, creator, genre, releaseYear} = req.body
+        const {id, name, image, type, synopsis, rating, creator, genre, releaseYear} = req.body
         if (!id) {
             return res.status(400).json({msg: 'O campo "id" é obrigatório para a atualização.'});
         }
@@ -39,10 +40,10 @@ exports.update = async (req, res) => {
         }
 
         // Obtenha o caminho da imagem anterior
-        const previousCoverPath = metadataToUpdate.cover;
+        const previousCoverPath = metadataToUpdate.image;
         
         const metaUpdate = {};
-        if(req.file){metaUpdate.cover = req.file.filename} //se tiver imagem salva o caminho
+        if(req.file){metaUpdate.image = '/images/' + req.file.filename} //se tiver imagem salva o caminho
 
         if (name) {metaUpdate.name = name;} 
         if (type) { metaUpdate.type = type;}    
@@ -57,7 +58,9 @@ exports.update = async (req, res) => {
         // Remova a imagem anterior do sistema de arquivos
         if (req.file && previousCoverPath) {
             try {
-                await fs.unlink(path.join(__dirname, '../public/covers', previousCoverPath));
+                const fullPath = path.join(__dirname, '../public', previousCoverPath.replace(/\\/g, '/'));
+
+                await fs.unlink(fullPath);
                 return res.status(200).json({ msg: 'Atualizado com sucesso!', data: updatedMetadata });
             } catch (unlinkError) {
                 console.error('Erro ao excluir a imagem anterior:', unlinkError);
@@ -93,8 +96,8 @@ exports.get = async  (req, res) => {
 
 exports.getId = async (req, res) => {
     try {
-        console.log('okokokokok');
-        const id = req.body.id;
+
+        const id = req.params.id;
 
         if (!id) {
             return res.status(400).json({ error: 'ID is required in the request body' });

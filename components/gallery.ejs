@@ -1,14 +1,13 @@
 
 
-<div class="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-screen-lg m-auto p-10">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-screen-lg m-auto p-10">
 
-    <% seriesPage.forEach(element => { %>
-        <a href="/serie/<%= element._id%>">
-
-            <img class="h-auto max-w-full rounded-lg" src="<%= element.image  %>" alt="">
-        </a>
-
-     
-    <% }) %>
-
+    <% if (typeof seriesPage != 'undefined' && seriesPage && seriesPage.length > 0) { %>   
+        <% seriesPage.forEach(element => { %>
+          <a href="/serie/<%= element._id%>" class="">
+            <img class=" max-w-full  w-52 h-72 object-cover rounded-sm" src="<%= element.image %>" alt="<%= element.title %>"> 
+          </a>
+        <% }) %>
+      <% } %> 
+      
 </div>

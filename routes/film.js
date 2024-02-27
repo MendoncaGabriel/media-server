@@ -3,8 +3,6 @@ const router = express.Router()
 
 const filController = require('../controller/filmController')
 
-//CADASTRAR ARQUIVOS DE SERIE
-router.get('/register', filController.saveFilm)
 
 //ASSISTIR
 router.get('/player/:id', filController.play );

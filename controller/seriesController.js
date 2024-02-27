@@ -179,7 +179,7 @@ exports.getData = async (req, res) => {
 
     // Fetch metadata based on id
     const metadataSerie = await Metadata.findById(id);
-    const nameMetadata = metadataSerie.name.toLocaleLowerCase().replace(/'/, '').trim()
+    const nameMetadata = metadataSerie.name.toLocaleLowerCase().replace(/'/, '').replace(/:/, '').trim()
 
 
     if (!metadataSerie) {

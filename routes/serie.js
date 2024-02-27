@@ -4,8 +4,7 @@ const router = express.Router();
 const seriesController = require('../controller/seriesController')
 
 
-//CADASTRAR ARQUIVOS DE SERIE
-router.get('/register', seriesController.saveSerie)
+
 
 //ASSISTIR
 router.get('/player/:id', seriesController.play );

@@ -14,9 +14,15 @@ exports.indexHome = async (req, res) => {
         const skip = (page - 1) * itemsPerPage;
         
         const seriesPage = await Metadata.find({type: "serie"}).skip(skip).limit(itemsPerPage);
-        console.log(seriesPage)
+
+        if(seriesPage){
+          res.render('index', {seriesPage: seriesPage})
+          
+        }else{
+          res.render('index')
+
+        }
         
-        res.render('index', {seriesPage: seriesPage})
         
     } catch (error) {
         
@@ -60,7 +66,7 @@ exports.seriePage = async (req, res) => {
 
   
 
-        res.render('pageSerie', {title: metadataSerie.name, season: organizedData})
+        res.render('pageSerie', {metadataSerie: metadataSerie, season: organizedData})
         // res.json({ metadata: metadataSerie, season: organizedData  });
       } catch (error) {
         console.error(error);

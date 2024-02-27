@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 require('./db/connect');
 
 const authRouter = require('./routes/auth');
-// const serieRouter = require('./routes/serie');
+const adminRouter = require('./routes/admin');
 const filmRouter = require('./routes/film');
 const metadataRouter = require('./routes/metadata');
 const indexRouter = require('./routes/index');
@@ -26,11 +26,11 @@ app.use('/components', express.static(path.join(__dirname, 'components')));
 
 
 // Routes
-app.use('/', indexRouter);
 app.use('/auth', authRouter);
-// app.use('/serie', serieRouter);
+app.use('/admin', adminRouter);
 app.use('/film', filmRouter);
 app.use('/metadata', metadataRouter);
+app.use('/', indexRouter);
 
 // 404 handler
 
@@ -38,10 +38,6 @@ app.use((req, res, next) => {
   next(createError(404));
 });
 
-
-app.get('/', (req, res) => {
-  res.send(':)')
- });
 
 // Server setup
 const PORT = 3001;
