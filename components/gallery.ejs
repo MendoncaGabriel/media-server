@@ -1,0 +1,14 @@
+
+
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-screen-lg m-auto p-10">
+
+    <% seriesPage.forEach(element => { %>
+        <a href="/serie/<%= element._id%>">
+
+            <img class="h-auto max-w-full rounded-lg" src="<%= element.image  %>" alt="">
+        </a>
+
+     
+    <% }) %>
+
+</div>

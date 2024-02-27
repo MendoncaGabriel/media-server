@@ -1,0 +1,44 @@
+<section class=" max-w-screen-lg m-auto p-10 bg-white shadow-sm">
+
+    
+    <h1 class="text-center text-4xl text-gray-700"><%= title %></h1>
+    
+    
+    
+    <ul>
+        <% Object.keys(season).sort((a, b) => a - b).forEach(pageNumber => { %>
+            <li class="my-2 py-3 px-4">
+                <button class="shadow-sm bg-gray-100 px-4 block w-full text-left py-2" onclick="toggleList('<%= pageNumber %>')">
+                    <strong>Temporada <%= pageNumber %></strong>
+                </button>
+                <ul id="season<%= pageNumber %>" class="overflow-hidden h-0">
+                    <% season[pageNumber].sort((a, b) => a.episode - b.episode).forEach(episode => { %>
+                        <li class="w-full">
+                            <a href="/serie/player/<%= episode._id %>" target="_blank" class="hover:bg-gray-200 w-full block h-full px-4 py-2">
+                                Episode <%= episode.episode %>
+                            </a>
+                        </li>
+                    <% }); %>
+                </ul>
+            </li>
+        <% }); %>
+    </ul>
+    
+    <script>
+    function toggleList(pageNumber) {
+        const seasonList = document.getElementById('season' + pageNumber);
+        if (seasonList.classList.contains('h-0')) {
+            // Se a lista está contraída, expande
+            seasonList.classList.remove('h-0');
+            seasonList.classList.add('h-full');
+        } else {
+            // Se a lista está expandida, contrai
+            seasonList.classList.remove('h-full');
+            seasonList.classList.add('h-0');
+        }
+    }
+    </script>
+    
+
+</section>
+  

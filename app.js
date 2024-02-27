@@ -6,9 +6,10 @@ const cookieParser = require('cookie-parser');
 require('./db/connect');
 
 const authRouter = require('./routes/auth');
-const serieRouter = require('./routes/serie');
+// const serieRouter = require('./routes/serie');
 const filmRouter = require('./routes/film');
 const metadataRouter = require('./routes/metadata');
+const indexRouter = require('./routes/index');
 
 const app = express();
 
@@ -21,23 +22,23 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/components', express.static(path.join(__dirname, 'components')));
+
 
 // Routes
+app.use('/', indexRouter);
 app.use('/auth', authRouter);
-app.use('/serie', serieRouter);
+// app.use('/serie', serieRouter);
 app.use('/film', filmRouter);
 app.use('/metadata', metadataRouter);
 
 // 404 handler
-app.get('/', (req, res, next) => {
-  res.send(':)')
-});
 app.use((req, res, next) => {
   next(createError(404));
 });
 
 // Server setup
-const PORT = 3000;
+const PORT = 3001;
 const HOST = '0.0.0.0';
 app.listen(PORT, HOST, () => {
   console.log(`Servidor aberto na porta ${PORT}`);
