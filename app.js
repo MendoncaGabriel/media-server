@@ -29,6 +29,9 @@ app.use('/film', filmRouter);
 app.use('/metadata', metadataRouter);
 
 // 404 handler
+app.get('/', (req, res, next) => {
+  res.send(':)')
+});
 app.use((req, res, next) => {
   next(createError(404));
 });

@@ -69,8 +69,9 @@ exports.page = async (req, res) => {
 exports.saveSerie = async (req, res)=>{
   const pasta = path.join(__dirname, '..', 'videos', 'series');
   const parseFilename = (filename) => {
-      const regex = /^(?<type>serie|filme)\+(?<name>[^+]+)(?:\+se(?<season>\d+))?(?:\+ep(?<episode>\d+))?\.(?<extension>mp4)$/;
-      
+      // const regex = /^(?<type>serie|filme)\+(?<name>[^+]+)(?:\+se(?<season>\d+))?(?:\+ep(?<episode>\d+))?\.(?<extension>mp4)$/;
+      const regex = /^(?<type>serie|filme)\+(?<name>[^+]+)(?:\+se(?<season>\d+))?(?:\+ep(?<episode>\d+))?\.(?<extension>(mp4|mkv))$/;
+
       const match = filename.match(regex);
       
       if (match) {
@@ -178,6 +179,8 @@ exports.getData = async (req, res) => {
 
     // Fetch metadata based on id
     const metadataSerie = await Metadata.findById(id);
+    const nameMetadata = metadataSerie.name.toLocaleLowerCase().replace(/'/, '').trim()
+
 
     if (!metadataSerie) {
       return res.status(404).json({ error: 'Metadados não encontrados' });
@@ -185,7 +188,7 @@ exports.getData = async (req, res) => {
 
     // Use the actual name directly without JSON.stringify
 
-    const episodes = await Serie.find({ name: metadataSerie.name }).exec();
+    const episodes = await Serie.find({ name: nameMetadata }).exec();
     const organizedData = episodes.reduce((acc, episode) => {
       const seasonKey = `${episode.season}`;
       acc[seasonKey] = acc[seasonKey] || [];

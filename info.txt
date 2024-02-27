@@ -5,6 +5,8 @@ SECRET=###
 
 
 
+//formulario de cadastro
+http://localhost:3000/metadata/teste (get)
 
 
 //cadastrar series automaticamente
