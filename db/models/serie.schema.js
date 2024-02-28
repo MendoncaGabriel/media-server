@@ -5,7 +5,6 @@ const SerieSchema = new mongoose.Schema({
     name: String,
     season: String,
     episode: String,
-    extension: String,
     file: String,
 });
 
