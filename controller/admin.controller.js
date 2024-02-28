@@ -15,7 +15,7 @@ const metadataSchema = require('../db/models/metadata.schema');
 const readdir = promisify(fs.readdir);
 //--------------------------------------------------------------------
 
-
+//ROTA 100% FUNCIONAL
 exports.dataRefresh = async (req, res) => {
   try {
     const listForSave = [];
@@ -91,7 +91,7 @@ exports.dataRefresh = async (req, res) => {
     }
 
 
-
+    /////////////SINCRONIZAR SERIES
     const seriesInDataBase = await SerieSchema.find();
 
     // Itens salvos no banco de dados mas não localmente - REMOVER DA BASE DE DADOS
@@ -104,7 +104,6 @@ exports.dataRefresh = async (req, res) => {
       await SerieSchema.findOneAndDelete({ file: item.file });
       console.log(`Episódio removido do banco de dados: ${item.file}`);
     }
-    //-------------------------------
 
 
     // Itens salvos localmente mas não no banco de dados - SALVAR NA BASE DE DADOS
@@ -118,7 +117,34 @@ exports.dataRefresh = async (req, res) => {
       await newEpisode.save();
       console.log(`Episódio adicionado ao banco de dados: ${item.file}`);
     }
-    
+
+    //////////////////////SINCRONIZAR FILMES
+    const filmInDataBase = await FilmSchema.find();
+
+    // Filmes salvos no banco de dados mas não localmente - REMOVER DA BASE DE DADOS
+    const filmsToRemove = filmInDataBase.filter(existingFilm =>
+      !listForSaveFilm.some(localFilm => localFilm.file === existingFilm.file)
+    );
+
+    for (const film of filmsToRemove) {
+      // Implemente a lógica para remover o filme da base de dados
+      await FilmSchema.findOneAndDelete({ file: film.file });
+      console.log(`Filme removido do banco de dados: ${film.file}`);
+    }
+
+    // Filmes salvos localmente mas não no banco de dados - SALVAR NA BASE DE DADOS
+    const filmsToSave = listForSaveFilm.filter(localFilm =>
+      !filmInDataBase.some(existingFilm => existingFilm.file === localFilm.file)
+    );
+
+    for (const film of filmsToSave) {
+      // Implemente a lógica para salvar o filme na base de dados
+      const newFilm = new FilmSchema(film);
+      await newFilm.save();
+      console.log(`Filme adicionado ao banco de dados: ${film.file}`);
+    }
+
+
 
     
     return res.json({msg:'ARQUIVOS SINCRONIZADOS COM A BASE DE DADOS'})
