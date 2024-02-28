@@ -54,80 +54,20 @@ exports.Home = async (req, res) => {
 
 
 
-exports.seriePage = async (req, res) => {
-  try {
-    const id = req.params.id;
-    console.log(`[ id: ${id ? "(pass)" : "(fail)"} ${id} ]`)
-    
-    
-    const metadataSerie = await MetadataSchema.findById(id);
-    console.log(`[ imetadataSeried: ${metadataSerie ? "(pass)" : "(fail)"} ]`)
 
-   
-
-    const nameMetadata = metadataSerie.name
-    .toLowerCase()                     // Converte para minúsculas
-    .replace(/[^a-z0-9- ]/g, '')       // Remove caracteres especiais, exceto '-' e espaço
-    .replace(/\s+/g, '-')              // Substitui espaços por traços
-    .trim();                           // Remove espaços em branco no início e no final
-    console.log(`[ nameMetadata: ${nameMetadata ? "(pass)" && nameMetadata : "(fail)"} ]`)
-    
-    
-    
-    if (!metadataSerie) {
-      return res.status(404).json({ error: 'Metadados não encontrados' });
-    }
-    
-    const episodes = await SerieSchema.find({ name: nameMetadata }).exec();
-    console.log(`[ episodes: ${episodes ? "(pass)" : "(fail)"} ]`)
-    console.log(episodes)
-
-
-    
-
-    const organizedData = episodes.reduce((acc, episode) => {
-      const seasonKey = `${episode.season}`;
-      acc[seasonKey] = acc[seasonKey] || [];
-      acc[seasonKey].push({
-          _id: episode._id,
-        // type: episode.type,
-        // name: episode.name,
-        // season: episode.season,
-        episode: episode.episode,
-        // extension: episode.extension,
-        file: episode.file,
-        // __v: episode.__v
-      });
-      return acc;
-    }, {});
-
-    
-
-    console.log(nameMetadata + ' indexController.js')
-
-    res.render('pageSerieView', {metadataSerie: metadataSerie, season: organizedData, nameMetadata: nameMetadata})
-
-  } catch (error) {
-    res.status(500).json({ msg: 'Erro do Servidor Interno', error });
-  }
-
-
-
-
-}
 
 exports.player = async (req, res) =>{
   const id = req.params.id;
   const nameFolder = req.params.name.replace(/ /g, '-')  
 
-  const episode = await Serie.findById(id);
+  const episode = await SerieSchema.findById(id);
   if(!episode){
     return res.status(404).json({ error: 'Episodio não encontrado' });
   }
 
   try {
 
-    const videoPath = path.join('D:', 'midia-server', 'series', nameFolder, episode.file);
+    const videoPath = episode.file
     const stat = fs.statSync(videoPath);
     const fileSize = stat.size;
     const range = req.headers.range || 'bytes=0-';

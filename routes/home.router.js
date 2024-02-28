@@ -19,7 +19,7 @@ const checkToken = require('../middleware/checkToken.middleware')
 
 
 router.get('/', pageController.Home)
-router.get('/conteudo/:id', pageController.seriePage)
+
 router.get('/serie/player/:name/:id',  pageController.player)
 
 

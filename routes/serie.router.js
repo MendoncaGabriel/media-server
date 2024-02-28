@@ -20,10 +20,10 @@ const checkToken = require('../middleware/checkToken.middleware')
 router.get('/serie/player/:name/:id',  pageController.player)
 
 
-
+//pagina da serie
 
 //BUSCAR DADOS
-router.get('/:id', seriesController.getData)
+router.get('/:id', seriesController.seriePage)
 
 
 module.exports = router;

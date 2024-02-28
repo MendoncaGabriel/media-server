@@ -10,6 +10,7 @@ const adminRouter = require('./routes/admin.router');
 const filmRouter = require('./routes/film.router');
 const metadataRouter = require('./routes/metadata.router');
 const homeRouter = require('./routes/home.router');
+const serieRouter = require('./routes/serie.router')
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use('/auth', authRouter);
 app.use('/admin', adminRouter);
 app.use('/film', filmRouter);
 app.use('/metadata', metadataRouter);
+app.use('/serie', serieRouter);
 app.use('/', homeRouter);
 
 // 404 handler

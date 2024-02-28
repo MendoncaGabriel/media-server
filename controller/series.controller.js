@@ -77,41 +77,52 @@ const rangeParser = require('range-parser');
 
 
 //PEGAR INFORMAÇÕES DA SERIE
-// exports.getData = async (req, res) => {
-//   try {
-//     const id = req.params.id;
+exports.seriePage = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const metadataSerie = await MetadataSchema.findById(id);
+    if (!metadataSerie) {
+      return res.status(404).json({ error: 'Metadados não encontrados' });
+    }
 
-//     // Fetch metadata based on id
-//     const metadataSerie = await Metadata.findById(id);
-//     const nameMetadata = metadataSerie.name.toLocaleLowerCase().replace(/'/, '').replace(/:/, '').trim()
+
+    
+    
+    
+    const episodes = await SerieSchema.find({ name: metadataSerie.name }).exec();
+    console.log(episodes)
 
 
-//     if (!metadataSerie) {
-//       return res.status(404).json({ error: 'Metadados não encontrados' });
-//     }
+    
 
-//     // Use the actual name directly without JSON.stringify
+    const organizedData = episodes.reduce((acc, episode) => {
+      const seasonKey = `${episode.season}`;
+      acc[seasonKey] = acc[seasonKey] || [];
+      acc[seasonKey].push({
+          _id: episode._id,
+        // type: episode.type,
+        // name: episode.name,
+        // season: episode.season,
+        episode: episode.episode,
+        // extension: episode.extension,
+        file: episode.file,
+        // __v: episode.__v
+      });
+      return acc;
+    }, {});
 
-//     const episodes = await Serie.find({ name: nameMetadata }).exec();
-//     const organizedData = episodes.reduce((acc, episode) => {
-//       const seasonKey = `${episode.season}`;
-//       acc[seasonKey] = acc[seasonKey] || [];
-//       acc[seasonKey].push({
-//          _id: episode._id,
-//         // type: episode.type,
-//         // name: episode.name,
-//         // season: episode.season,
-//         episode: episode.episode,
-//         // extension: episode.extension,
-//         file: episode.file,
-//         // __v: episode.__v
-//       });
-//       return acc;
-//     }, {});
+    
 
-//     res.json({ metadata: metadataSerie, season: organizedData  });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Erro do Servidor Interno' });
-//   }
-// };
+    //console.log(metadataSerie) //metadata
+    //console.log(organizedData) //temporadas
+
+    res.render('pageSerieView', {metadataSerie: metadataSerie, season: organizedData, nameMetadata: metadataSerie.name})
+
+  } catch (error) {
+    res.status(500).json({ msg: 'Erro do Servidor Interno', error });
+  }
+
+
+
+
+}
