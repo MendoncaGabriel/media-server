@@ -1,5 +1,5 @@
-<section id="video" class="hidden aspect-video p-5">
-    <video id="videoElement" class="aspect-video" controls autoplay></video>
+<section id="video" class="hidden aspect-video p-5 w-full">
+    <video id="videoElement" class="aspect-video w-full" controls autoplay></video>
 </section>
 
 <ul>
@@ -11,7 +11,7 @@
             <ul id="season<%= pageNumber %>" class="overflow-hidden h-0">
                 <% season[pageNumber].sort((a, b) => a.episode - b.episode).forEach(episode => { %>
                     <li class="w-full">
-                        <button onclick="openVideo('/serie/player/<%= episode._id %>', this)" class="hover:bg-gray-200 text-left h-full px-4 py-2 block w-full ">
+                        <button onclick="openVideo('/serie/player/<%= nameFolder %>/<%= episode._id %>', this)" class="hover:bg-gray-200 text-left h-full px-4 py-2 block w-full ">
                             Episodio <%= episode.episode %>
                         </button>
                     </li>

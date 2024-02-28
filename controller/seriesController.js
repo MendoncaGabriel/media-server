@@ -16,7 +16,8 @@ exports.play = async (req, res) => {
 
   try {
 
-    const videoPath = 'videos/series/' + episode.file 
+    // const videoPath = 'videos/series/' + episode.file 
+    const videoPath = path.join('D:', 'midia-server', 'series', episode.file);
     const stat = fs.statSync(videoPath);
     const fileSize = stat.size;
 
@@ -188,6 +189,8 @@ exports.saveSerie = async (req, res)=>{
   } 
 }
 
+
+//PEGAR INFORMAÇÕES DA SERIE
 exports.getData = async (req, res) => {
   try {
     const id = req.params.id;

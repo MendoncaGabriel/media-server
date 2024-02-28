@@ -1,13 +1,15 @@
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-screen-lg m-auto lg:p-10 p-4 flex-none bg-white shadow-lg">
 
+  <% if (typeof seriesPage != 'undefined' && seriesPage && seriesPage.length > 0) { %>   
 
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-screen-lg m-auto p-10">
+    <% seriesPage.forEach(element => { %>
 
-    <% if (typeof seriesPage != 'undefined' && seriesPage && seriesPage.length > 0) { %>   
-        <% seriesPage.forEach(element => { %>
-          <a href="/serie/<%= element._id%>" class="">
-            <img class=" max-w-full  w-52 h-72 object-cover rounded-sm" src="<%= element.image %>" alt="<%= element.title %>"> 
-          </a>
-        <% }) %>
-      <% } %> 
+      <a href="/serie/<%= element._id%>" class=" md:w-52 w-40 md:h-72 h-56 rounded-sm overflow-hidden m-auto">
+        <img class="w-full h-full  object-cover " src="<%= element.image %>" alt="<%= element.title %>"> 
+      </a>
+      
+    <% }) %>
+
+  <% } %> 
       
 </div>

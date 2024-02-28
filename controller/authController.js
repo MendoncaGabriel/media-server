@@ -56,3 +56,7 @@ exports.loginFront = async (req, res) => {
 exports.registerFront = async (req, res) => {
     return res.render('register')
 }
+
+
+
+  

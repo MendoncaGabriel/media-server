@@ -11,15 +11,24 @@
     <%- include('../components/navbar.ejs') %>
 
 
-    <section class=" max-w-screen-lg m-auto p-10 bg-white shadow-sm">
-
-        <div class="grid grid-cols-4">
-            <img class=" max-w-full  w-52 h-72 object-cover rounded-sm" src="<%= metadataSerie.image %>" alt="<%= metadataSerie.name %>"> 
-            <h1 class="text-left text-5xl text-gray-700 col-span-3"><%= metadataSerie.name %></h1>
+    <section class="md:grid md:grid-cols-2 max-w-screen-lg m-auto lg:p-10 p-5 bg-white shadow-sm ">
+        <img class="md:w-52 w-60 md:h-72 h-96 rounded-sm overflow-hidden m-auto  object-cover" src="<%= metadataSerie.image %>" alt="<%= metadataSerie.name %>"> 
+        <div>
+            <h1 class="text-center my-2 md:my-0 md:text-left md:text-5xl text-4xl text-gray-700 col-span-3"><%= metadataSerie.name %></h1>
+            <br>
+            <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-700 col-span-3"><b>Lançamento:</b> <%= metadataSerie.releaseYear %></p>
+            <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-700 col-span-3"><b>Gênero:</b> <%= metadataSerie.genre %></p>
+            <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-700 col-span-3"><b>Criador:</b> <%= metadataSerie.creator %></p>
+            <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-700 col-span-3"><b>Sinopse:</b> <%= metadataSerie.synopsis %></p>
         </div>
 
-        <%- include('../components/list.ejs') %>
+        <br><br>
+        <div class="col-span-2">
+
+            <%- include('../components/list.ejs', {nameFolder: nameMetadata}) %>
+        </div>
     </section> 
+
 
 
 

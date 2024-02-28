@@ -9,6 +9,8 @@ const checkToken = require('../middleware/checkToken')
 
 router.get('/:name', checkToken, metadataController.get);
 
+router.post('/register', uploadImage, metadataController.register);
+
 router.post('/update', uploadImage, metadataController.update);
 
 router.get('/metadataId/:id', metadataController.getId);
