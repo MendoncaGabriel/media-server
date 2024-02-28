@@ -1,21 +1,30 @@
+//### CONTROLLER METADATA ###
+
+
+//SCHEMAS DATABASE
+const MetadataSchema = require('../db/models/metadata.schema') 
+const SerieSchema = require('../db/models/serie.schema')
+const FilmSchema = require('../db/models/film.schema')
+const UserSchema = require('../db/models/user.schema')
 
 const fs = require('fs/promises');
 const path = require('path')
-const Metadata = require('../db/models/metadata')
+const Metadata = require('../db/models/metadata.schema')
+//--------------------------------------------------------------------
 
 
 
-exports.register = async (req, res) => {
+//SALVAR METADADOS
+exports.newMetadata = async (req, res) => {
     const imageCover = req.file ? req.file.filename : ''
-    const { name, type, releaseYear, genre, creator, rating, synopsis } = req.body;
+    const { name, type, releaseYear, genre, creator, rating, synopsis, disc } = req.body;
 
     try {
-        const newMetaData = new Metadata({ name, type, releaseYear, genre, creator, rating, synopsis, image:  '/images/' + imageCover });
+        const newMetaData = new Metadata({ name, type, releaseYear, genre, creator, rating, synopsis, disc, image:  '/images/' + imageCover });
         const doc = await newMetaData.save();
 
         if (doc) {
-            res.render('metadataRegister', {msg: 'Cadastro realizado com sucesso!', doc})
-            // res.status(200).json({msg: 'Cadastro realizado com sucesso!', doc});
+            res.status(200).json({msg: 'Cadastro realizado com sucesso!', doc})
         }
     } catch (error) {
 
@@ -23,9 +32,7 @@ exports.register = async (req, res) => {
     }
 }
 
-
-
-
+//ATUALIZAR METADADOS
 exports.update = async (req, res) => {
     try {
         const {id, name, image, type, synopsis, rating, creator, genre, releaseYear} = req.body
@@ -83,6 +90,7 @@ exports.update = async (req, res) => {
     }
 }
 
+//PEGAR METADADOS POR NOME
 exports.get = async  (req, res) => {
     const name = req.params.name
     const metadata = await Metadata.findOne({name: name})
@@ -94,6 +102,7 @@ exports.get = async  (req, res) => {
     }
 }
 
+//PEGAR METADADOS POR ID
 exports.getId = async (req, res) => {
     try {
 
@@ -116,7 +125,3 @@ exports.getId = async (req, res) => {
     }
 }
 
-exports.renderUpdate = async (req, res) =>{
-    const metadataList = await Metadata.find().select('name _id');
-    res.render('updateMetadata', {metadataList: metadataList})
-}

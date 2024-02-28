@@ -1,37 +1,50 @@
-const Metadata = require('../db/models/metadata')
-const Serie = require('../db/models/serie')
+//### CONTROLLER PAGE ###
+
+
+//SCHEMAS DATABASE
+const MetadataSchema = require('../db/models/metadata.schema') 
+const SerieSchema = require('../db/models/serie.schema')
+const FilmSchema = require('../db/models/film.schema')
+const UserSchema = require('../db/models/user.schema')
+
 const fs = require('fs');
 const path = require('path');
 const rangeParser = require('range-parser');
 const cache = require('memory-cache');
+
+
+//--------------------------------------------------------------------
+
+
+
+
 const cacheTime = 10 * 60 * 60 * 1 //1h
 
 
 
 
-exports.indexHome = async (req, res) => {
+exports.Home = async (req, res) => {
   try {
     const page = req.query.page || 1; 
     const cacheKey = `seriesPageCache_${page}`;
-
     const cachedData = cache.get(cacheKey);
 
     if (cachedData) {
       console.log('Pagina com cache')
-      res.render('index', { seriesPage: cachedData });
+      res.render('homeView', { seriesPage: cachedData });
     } else {
       console.log('Pagina sem cache')
       const itemsPerPage = 10;
       const skip = (page - 1) * itemsPerPage;
 
-      const seriesPage = await Metadata.find({ type: "serie" }).skip(skip).limit(itemsPerPage);
+      const seriesPage = await MetadataSchema.find({ type: "serie" }).skip(skip).limit(itemsPerPage);
 
       if (seriesPage) {
         cache.put(cacheKey, seriesPage, cacheTime ); 
 
-        res.render('index', { seriesPage: seriesPage });
+        res.render('homeView', { seriesPage: seriesPage });
       } else {
-        res.render('index');
+        res.render('homeView');
       }
     }
   } catch (error) {
@@ -40,21 +53,38 @@ exports.indexHome = async (req, res) => {
 };
 
 
+
 exports.seriePage = async (req, res) => {
   try {
     const id = req.params.id;
-    const metadataSerie = await Metadata.findById(id);
+    console.log(`[ id: ${id ? "(pass)" : "(fail)"} ${id} ]`)
+    
+    
+    const metadataSerie = await MetadataSchema.findById(id);
+    console.log(`[ imetadataSeried: ${metadataSerie ? "(pass)" : "(fail)"} ]`)
+
+   
+
     const nameMetadata = metadataSerie.name
-    .toLowerCase()   // Converte para minúsculas
-    .replace(/'/g, '')   // Remove aspas simples
-    .trim();  // Remove espaços em branco no início e no final
-  
-  
+    .toLowerCase()                     // Converte para minúsculas
+    .replace(/[^a-z0-9- ]/g, '')       // Remove caracteres especiais, exceto '-' e espaço
+    .replace(/\s+/g, '-')              // Substitui espaços por traços
+    .trim();                           // Remove espaços em branco no início e no final
+    console.log(`[ nameMetadata: ${nameMetadata ? "(pass)" && nameMetadata : "(fail)"} ]`)
+    
+    
+    
     if (!metadataSerie) {
       return res.status(404).json({ error: 'Metadados não encontrados' });
     }
-  
-    const episodes = await Serie.find({ name: nameMetadata }).exec();
+    
+    const episodes = await SerieSchema.find({ name: nameMetadata }).exec();
+    console.log(`[ episodes: ${episodes ? "(pass)" : "(fail)"} ]`)
+    console.log(episodes)
+
+
+    
+
     const organizedData = episodes.reduce((acc, episode) => {
       const seasonKey = `${episode.season}`;
       acc[seasonKey] = acc[seasonKey] || [];
@@ -71,15 +101,20 @@ exports.seriePage = async (req, res) => {
       return acc;
     }, {});
 
+    
+
     console.log(nameMetadata + ' indexController.js')
 
-    res.render('pageSerie', {metadataSerie: metadataSerie, season: organizedData, nameMetadata: nameMetadata})
+    res.render('pageSerieView', {metadataSerie: metadataSerie, season: organizedData, nameMetadata: nameMetadata})
 
   } catch (error) {
-    res.status(500).json({ error: 'Erro do Servidor Interno' });
+    res.status(500).json({ msg: 'Erro do Servidor Interno', error });
   }
-}
 
+
+
+
+}
 
 exports.player = async (req, res) =>{
   const id = req.params.id;

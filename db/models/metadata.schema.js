@@ -5,6 +5,10 @@ const metadataSchema = new mongoose.Schema({
         type:String,
         required: true
     },
+    disc: {
+        type:String,
+        required: true
+    },
     type: {
         type: String,
         required: true

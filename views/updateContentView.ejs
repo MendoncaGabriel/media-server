@@ -5,13 +5,25 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <title>Novo conteúdo</title>
+  <title>Atualizar conteúdo</title>
 </head>
 <body class="bg-gray-100 p-8">
 
   
-  <form action="/metadata/register" method="post" enctype="multipart/form-data" class="max-w-xl mx-auto bg-white p-6 rounded-md shadow-md">
-    <h1 class="text-2xl font-bold mb-4">Novo conteúdo</h1>
+  <form action="/admin/atualizar-conteudo" method="post" enctype="multipart/form-data" class="max-w-xl mx-auto bg-white p-6 rounded-md shadow-md">
+    <a href="/admin" class="my-2 text-blue-600 text-sm hover:underline mb-5 block">Voltar para home</a>
+    <h1 class="text-2xl font-bold mb-4">Atualizar conteúdo</h1>
+
+    <div class="mb-4">
+      <label for="id" class="block text-sm font-medium text-gray-600">Conteúdo:</label>
+      <select name="id" id="id" required class="mt-1 p-2 w-full border rounded-md" onchange="sendPostRequest(this)">
+        <option value="" disabled selected >Escolha o conteúdo</option>
+        <% conteudos.forEach(element => { %>
+         
+          <option value="<%= element._id %>"><%= element.name %></option>
+        <% }) %>
+      </select>
+    </div>
 
     <div class="mb-4">
       <label for="name" class="block text-sm font-medium text-gray-600">Nome:</label>
@@ -55,14 +67,14 @@
     <div class="mb-4  duration-500">
       <img id="imagePreview" src="" alt="" class="w-52 h-72 object-cover hidden m-auto my-4 duration-500">
       <label for="image" class="block text-sm font-medium text-gray-600 duration-500">Imagem:</label>
-      <input type="file" id="image" name="image" accept="image/*" class="mt-1 duration-500" required onchange="previewImage(this)">
+      <input type="file" id="image" name="image" accept="image/*" class="mt-1 duration-500"  onchange="previewImage(this)">
     </div>
 
     <div class="mt-4">
       <input type="submit" value="Salvar" class="bg-blue-500 w-full text-white p-2 rounded-md cursor-pointer">
     </div>
 
-    <a href="/" class="my-2 text-blue-600 text-sm hover:underline">Ir para Home</a>
+    
 
   </form>
 </body>
@@ -81,4 +93,45 @@
       reader.readAsDataURL(input.files[0]);
     }
   }
+
+
+
+
+  function sendPostRequest(selectElement) {
+    const selectedValue = selectElement.value;
+    console.log(selectedValue)
+    if (selectedValue) {
+      fetch('/metadata/metadataId/' + selectedValue, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        
+      })
+      .then(response => response.json())
+      .then(data => {
+        preencherDados(data)
+        console.log(data);
+      })
+      .catch(error => {
+        console.error( error);
+      });
+    }
+  }
+
+
+  function preencherDados(data){
+
+    document.getElementById('imagePreview').classList.remove('hidden')
+    document.getElementById('imagePreview').src = data.image ? data.image : ''
+    document.getElementById('name').value = data.name ? data.name : ''
+    document.getElementById('type').value = data.type ? data.type : ''
+    document.getElementById('releaseYear').value = data.releaseYear ? data.releaseYear : ''
+    document.getElementById('genre').value = data.genre ? data.genre : ''
+    document.getElementById('creator').value = data.creator ? data.creator : ''
+    document.getElementById('rating').value = data.rating ? data.rating : ''
+    document.getElementById('synopsis').value = data.synopsis ? data.synopsis : ''
+    document.getElementById('synopsis').innerText = data.synopsis ? data.synopsis : ''
+  }
+
 </script>

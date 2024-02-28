@@ -1,9 +1,21 @@
-const User = require('../db/models/user')
-const express =  require('express')
-const routes = express.Router()
+//### ROTA AUTH ###    
 require('dotenv').config()
-const authController = require('../controller/authController')
+const express = require('express')
+const router = express.Router()
 const bcrypt = require('bcrypt')
+
+//CONTROLLERS
+const authController = require('../controller/auth.controller')
+const filmController = require('../controller/film.controller')
+const metadataController = require('../controller/metadata.controller')
+const pageController = require('../controller/page.controller')
+const scannerController = require('../controller/scanner.controller')
+const seriesController = require('../controller/series.controller')
+
+//MIDDLEWARE
+const uploadImage = require('../middleware/uploadImage.middleware');
+const uploadVideo = require('../middleware/uploadVideo.middleware')
+const checkToken = require('../middleware/checkToken.middleware')
 
 
 async function validationRegister(req, res, next){
@@ -77,12 +89,12 @@ async function checkLogin(req, res, next){
 }
 
 //Front End - ADMIN
-routes.get('/register', authController.registerFront)
-routes.get('/login', authController.loginFront)
+router.get('/register', authController.registerFront)
+router.get('/login', authController.loginFront)
 
 
 //Back End - USER
-routes.post('/register', validationRegister, authController.register)
-routes.post('/login', checkLogin, authController.login)
+router.post('/register', validationRegister, authController.register)
+router.post('/login', checkLogin, authController.login)
 
-module.exports = routes
+module.exports = router

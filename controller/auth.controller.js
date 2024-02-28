@@ -1,8 +1,16 @@
+//### CONTROLLER AUTH ###
+
+//SCHEMAS DATABASE
+const MetadataSchema = require('../db/models/metadata.schema') 
+const SerieSchema = require('../db/models/serie.schema')
+const FilmSchema = require('../db/models/film.schema')
+const UserSchema = require('../db/models/user.schema')
+
 
 require('dotenv').config()
-const User = require('../db/models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+//--------------------------------------------------------------------
 
 
 exports.register = async (req, res) =>{

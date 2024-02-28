@@ -5,11 +5,11 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 require('./db/connect');
 
-const authRouter = require('./routes/auth');
-const adminRouter = require('./routes/admin');
-const filmRouter = require('./routes/film');
-const metadataRouter = require('./routes/metadata');
-const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth.router');
+const adminRouter = require('./routes/admin.router');
+const filmRouter = require('./routes/film.router');
+const metadataRouter = require('./routes/metadata.router');
+const homeRouter = require('./routes/home.router');
 
 const app = express();
 
@@ -30,7 +30,7 @@ app.use('/auth', authRouter);
 app.use('/admin', adminRouter);
 app.use('/film', filmRouter);
 app.use('/metadata', metadataRouter);
-app.use('/', indexRouter);
+app.use('/', homeRouter);
 
 // 404 handler
 
