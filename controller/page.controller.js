@@ -37,6 +37,7 @@ exports.Home = async (req, res) => {
       const itemsPerPage = 10;
       const skip = (page - 1) * itemsPerPage;
 
+      //TROQUE AQUI O QUE VAI APARECER NA GALERIA DE HOME FILMES OU SERIES
       const seriesPage = await MetadataSchema.find({ type: "serie" }).skip(skip).limit(itemsPerPage);
 
       if (seriesPage) {
