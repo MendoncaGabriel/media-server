@@ -6,13 +6,18 @@
                     <strong>Temporada <%= pageNumber %></strong>
                 </button>
                 <ul id="season<%= pageNumber %>" class="overflow-hidden h-0">
+
                     <% season[pageNumber].sort((a, b) => a.episode - b.episode).forEach(episode => { %>
-                        <li class="w-full">
-                            <button onclick="openVideo('/player/serie/<%= episode._id %>', this)" class="hover:bg-gray-200 text-left h-full px-4 py-2 block w-full ">
+                        <li class="w-full" id="<%= episode._id %>">
+                            <button 
+                                onclick="openVideo('/player/serie/<%= episode._id %>', this), marcarItem('<%= episode._id %>')" 
+                                class="hover:bg-gray-200 text-left h-full px-4 py-2 block w-full "
+                            >
                                 Episodio <%= episode.episode %>
                             </button>
                         </li>
                     <% }); %>
+                    
                 </ul>
             </li>
         <% }); %>
@@ -20,6 +25,62 @@
 <% } %>
 
 <script>
+
+    // Função para marcar o item
+    function marcarItem(episodeId) {
+        // Verifica se o array já existe no localStorage
+        let markedItems = JSON.parse(localStorage.getItem('markedItems')) || [];
+
+        // Verifica se o item já está marcado
+        const index = markedItems.indexOf(episodeId);
+        if (index === -1) {
+            // Se não estiver marcado, adiciona ao array
+            markedItems.push(episodeId);
+        } else {
+            // Se estiver marcado, remove do array
+            markedItems.splice(index, 1);
+        }
+
+        // Salva o array atualizado no localStorage
+        localStorage.setItem('markedItems', JSON.stringify(markedItems));
+
+        // Atualiza a classe do botão na interface
+        const button = document.querySelector(`button[data-episode-id="${episodeId}"]`);
+        if (index === -1) {
+            button.classList.add('bg-green-200');
+        } else {
+            button.classList.remove('bg-green-200');
+        }
+    }
+
+
+    // Função para aplicar a classe bg-green-200 às li correspondentes
+    function aplicarClasseBG() {
+        // Obtém os IDs armazenados no localStorage
+        let markedItems = JSON.parse(localStorage.getItem('markedItems')) || [];
+
+        // Itera sobre todas as li no documento
+        const listaItems = document.querySelectorAll('li');
+
+        listaItems.forEach((item) => {
+
+            if(item.id){
+                console.log(item.id)
+
+                if (markedItems.includes(item.id)) {
+                    // Aplica a classe bg-green-200 à li
+                    item.classList.add('bg-green-200');
+                }
+            }
+
+        });
+    }
+
+    // Chama a função ao carregar a página
+    aplicarClasseBG();
+
+
+
     function openVideo(link, button) {
         button.classList.add('bg-green-200');
 
