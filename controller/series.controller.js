@@ -2,7 +2,7 @@
 
 
 //SCHEMAS DATABASE
-const MetadataSchema = require('../db/models/metadata.schema') 
+const MetadataSchema = require('../db/models/metadata.schema')
 const SerieSchema = require('../db/models/serie.schema')
 const FilmSchema = require('../db/models/film.schema')
 const UserSchema = require('../db/models/user.schema')
@@ -13,66 +13,7 @@ const rangeParser = require('range-parser');
 //--------------------------------------------------------------------
 
 
-//ASSISTIR
-// exports.play = async (req, res) => {
-//   const id = req.params.id;
-//   const episode = await Serie.findById(id);
-//   if(!episode){
-//     return res.status(404).json({ error: 'Episodio não encontrado' });
-//   }
 
-
-//   try {
-
-//     // const videoPath = 'videos/series/' + episode.file 
-//     const videoPath = path.join('D:', 'midia-server', 'series', episode.file);
-//     const stat = fs.statSync(videoPath);
-//     const fileSize = stat.size;
-
-//     const range = req.headers.range || 'bytes=0-';
-//     const positions = rangeParser(fileSize, range, { combine: false })[0];
-//     const start = positions.start;
-//     const end = positions.end;
-
-//     const chunkSize = Math.min(1024 * 1024, end - start + 1);
-
-//     const stream = fs.createReadStream(videoPath, { start, end });
-
-//     res.writeHead(206, {
-//       'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-//       'Accept-Ranges': 'bytes',
-//       'Content-Length': chunkSize,
-//       'Content-Type': 'video/mp4',
-//       'Cache-Control': 'public, max-age=3600', // Ajustado para 1 hora
-//     });
-
-//     stream.pipe(res);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Internal Server Error');
-//   }
-// }
-
-//PAGINAÇÃO DE SERIES
-// exports.page = async (req, res) => {
-//   try {
-//     const page = parseInt(req.params.page);
-
-//     if (isNaN(page)) {
-//       return res.status(400).json({ msg: "Invalid page number" });
-//     }
-
-//     const itemsPerPage = 10;
-//     const skip = (page - 1) * itemsPerPage;
-
-//     const seriesPage = await Metadata.find({type: "serie"}).skip(skip).limit(itemsPerPage);
-
-//     res.status(200).json(seriesPage);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
 
 
 
@@ -85,21 +26,13 @@ exports.seriePage = async (req, res) => {
       return res.status(404).json({ error: 'Metadados não encontrados' });
     }
 
-
-    
-    
-    
     const episodes = await SerieSchema.find({ name: metadataSerie.name }).exec();
-    console.log(episodes)
-
-
-    
 
     const organizedData = episodes.reduce((acc, episode) => {
       const seasonKey = `${episode.season}`;
       acc[seasonKey] = acc[seasonKey] || [];
       acc[seasonKey].push({
-          _id: episode._id,
+        _id: episode._id,
         // type: episode.type,
         // name: episode.name,
         // season: episode.season,
@@ -110,19 +43,10 @@ exports.seriePage = async (req, res) => {
       });
       return acc;
     }, {});
-
-    
-
-    //console.log(metadataSerie) //metadata
-    //console.log(organizedData) //temporadas
-
-    res.render('pageSerieView', {metadataSerie: metadataSerie, season: organizedData, nameMetadata: metadataSerie.name})
+  
+    res.render('pageView', { metadataSerie: metadataSerie, season: organizedData, nameMetadata: metadataSerie.name })
 
   } catch (error) {
     res.status(500).json({ msg: 'Erro do Servidor Interno', error });
   }
-
-
-
-
 }

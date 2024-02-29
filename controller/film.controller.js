@@ -1,56 +1,39 @@
 //### CONTROLLER FILM ###
 
+const fs = require('fs');
+const path = require('path');
 
 //SCHEMAS DATABASE
 const MetadataSchema = require('../db/models/metadata.schema') 
-const SerieSchema = require('../db/models/serie.schema')
 const FilmSchema = require('../db/models/film.schema')
-const UserSchema = require('../db/models/user.schema')
 
-const fs = require('fs');
-const path = require('path');
-const rangeParser = require('range-parser');
 
-//--------------------------------------------------------------------
 
-//ASSISTIR
-exports.play = async (req, res) => {
-  const id = req.params.id;
-  const episode = await Film.findById(id);
-  if(!episode){
-    return res.status(404).json({ error: 'Episodio não encontrado' });
-  }
-
+//PAGINA DO FILME
+exports.filmPage = async (req, res) => {
 
   try {
+    const id = req.params.id;
+    const metadataSerie = await MetadataSchema.findById(id);
+    console.log(metadataSerie.name)
 
-    const videoPath = 'videos/films/' + episode.file 
-    const stat = fs.statSync(videoPath);
-    const fileSize = stat.size;
+    if (!metadataSerie) {
+      return res.status(404).json({ error: 'Metadados não encontrados' });
+    }
 
-    const range = req.headers.range || 'bytes=0-';
-    const positions = rangeParser(fileSize, range, { combine: false })[0];
-    const start = positions.start;
-    const end = positions.end;
+    const tratamentoNome = metadataSerie.name.replace(/:/, '')
+    const filmData = await FilmSchema.findOne({name: tratamentoNome})
+    console.log(filmData._id)
 
-    const chunkSize = Math.min(1024 * 1024, end - start + 1);
 
-    const stream = fs.createReadStream(videoPath, { start, end });
+    res.render('pageView', { metadataSerie: metadataSerie, nameMetadata: metadataSerie.name, srcStreaming: `/player/film/${filmData._id}` })
 
-    res.writeHead(206, {
-      'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-      'Accept-Ranges': 'bytes',
-      'Content-Length': chunkSize,
-      'Content-Type': 'video/mp4',
-      'Cache-Control': 'public, max-age=3600', // Ajustado para 1 hora
-    });
-
-    stream.pipe(res);
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).json({ msg: 'Erro do Servidor Interno', error });
   }
 }
+
+
 
 //PAGINAÇÃO DE FILMES - ok
 exports.page = async (req, res) => {

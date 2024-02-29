@@ -16,14 +16,8 @@ const uploadVideo = require('../middleware/uploadVideo.middleware')
 const checkToken = require('../middleware/checkToken.middleware')
 
 
-//ASSISTIR
-router.get('/player/:id', filmController.play );
-
-//PAGINAÇÃO DE SERIES
-router.get('/page/:page', filmController.page)
-
 //BUSCAR DADOS 
-router.get('/:id', filmController.getData)
+router.get('/:id', filmController.filmPage)
 
 
 module.exports = router
