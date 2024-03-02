@@ -15,16 +15,18 @@ exports.filmPage = async (req, res) => {
   try {
     const id = req.params.id;
     const metadataSerie = await MetadataSchema.findById(id);
-    console.log(metadataSerie.name)
-
+    console.log(id)
     if (!metadataSerie) {
+      console.log('sem metadataSerie')
       return res.status(404).json({ error: 'Metadados não encontrados' });
     }
-
+    console.log('metadados' + metadataSerie)
+    
+    
     const tratamentoNome = metadataSerie.name.replace(/:/, '')
     const filmData = await FilmSchema.findOne({name: tratamentoNome})
-    console.log(filmData._id)
-
+    console.log('tratamentoNome:', tratamentoNome)
+    console.log('filme:', filmData)
 
     res.render('pageView', { metadataSerie: metadataSerie, nameMetadata: metadataSerie.name, srcStreaming: `/player/film/${filmData._id}` })
 

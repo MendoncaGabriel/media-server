@@ -47,7 +47,7 @@ exports.Filmes = async (req, res) => {
       res.render('homeView', { seriesPage: cachedData });
     } else {
       console.log('Pagina sem cache')
-      const itemsPerPage = 10;
+      const itemsPerPage = 100; //MAXIMO 20
       const skip = (page - 1) * itemsPerPage;
 
       //TROQUE AQUI O QUE VAI APARECER NA GALERIA DE HOME FILMES OU SERIES
@@ -77,7 +77,7 @@ exports.Home = async (req, res) => {
       res.render('homeView', { seriesPage: cachedData });
     } else {
       console.log('Pagina sem cache')
-      const itemsPerPage = 10;
+      const itemsPerPage = 20;
       const skip = (page - 1) * itemsPerPage;
 
       //TROQUE AQUI O QUE VAI APARECER NA GALERIA DE HOME FILMES OU SERIES

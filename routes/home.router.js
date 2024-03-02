@@ -10,5 +10,5 @@ const checkToken = require('../middleware/checkToken.middleware')
 const pageController = require('../controller/page.controller')
 router.get('/series', pageController.Series)
 router.get('/filmes', pageController.Filmes)
-router.get('/', pageController.Series)
+router.get('/', pageController.Filmes)
 module.exports = router

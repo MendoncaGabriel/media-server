@@ -1,10 +1,10 @@
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-screen-xl  m-auto lg:p-10 p-4 flex-none bg-white shadow-lg">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-screen-xl  m-auto lg:p-10 p-4 flex-none shadow-lg">
 
   <% if (typeof seriesPage != 'undefined' && seriesPage && seriesPage.length > 0) { %>   
 
     <% seriesPage.forEach(element => { %>
 
-      <a href="/<%= element.type %>/<%= element._id %>" class=" md:w-72 w-40 md:h-96 h-56 rounded-sm overflow-hidden m-auto duration-200 hover:scale-105 hover:shadow">
+      <a href="/<%= element.type %>/<%= element._id %>" title="<%= element.name %>" class=" md:w-64 w-40 md:h-96 h-56 rounded-sm overflow-hidden m-auto duration-200 hover:scale-105 hover:shadow">
         <img class="w-full h-full  object-cover duration-200  " src="<%= element.image %>" alt="<%= element.title %>"> 
       </a>
       

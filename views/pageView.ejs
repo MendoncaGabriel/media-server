@@ -1,34 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= metadataSerie.name %></title>
     <script src="https://cdn.tailwindcss.com"></script>
+    
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-950">
 
     <%- include('../components/navbar.ejs') %>
 
-
-    <section class="md:grid md:grid-cols-2 max-w-screen-xl m-auto lg:p-10 p-5 bg-white shadow-sm min-h-screen">
+    <section class="md:grid md:grid-cols-2 max-w-screen-xl m-auto lg:p-10 p-5  shadow-sm min-h-screen">
+        <!-- CAPA -->
         <img class="md:w-72 w-60 md:h-96 h-96   rounded-sm overflow-hidden m-auto  object-cover" src="<%= metadataSerie.image %>" alt="<%= metadataSerie.name %>"> 
-        <div>
-            <h1 class="text-center my-2 md:my-0 md:text-left md:text-5xl text-4xl text-gray-700 col-span-3"><%= metadataSerie.name %></h1>
-            <br>
-            <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-700 col-span-3"><b>Lançamento:</b> <%= metadataSerie.releaseYear %></p>
-            <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-700 col-span-3"><b>Gênero:</b> <%= metadataSerie.genre %></p>
-            <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-700 col-span-3"><b>Criador:</b> <%= metadataSerie.creator %></p>
-            <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-700 col-span-3"><b>Sinopse:</b> <%= metadataSerie.synopsis %></p>
-        </div>
 
-        <br><br>
+        <!-- METADADOS -->
+        <div>
+            <h1 class="text-center my-2 md:my-0 md:text-left md:text-5xl text-4xl text-gray-300 col-span-3"><%= metadataSerie.name %></h1>
+            <br>
+
+            <% if(typeof metadataSerie.releaseYear !== 'undefined' && metadataSerie.releaseYear){  %>
+                <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-700 col-span-3"><b>Lançamento:</b> <%= metadataSerie.releaseYear %></p>
+            <% }%>
+
+            <% if(typeof metadataSerie.genre !== 'undefined' && metadataSerie.genre){  %>
+                <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-700 col-span-3"><b>Gênero:</b> <%= metadataSerie.genre %></p>
+            <% }%>
+
+            <% if(typeof metadataSerie.creator !== 'undefined' && metadataSerie.creator){  %>
+                <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-700 col-span-3"><b>Criador:</b> <%= metadataSerie.creator %></p>
+            <% }%>
+
+            <% if(typeof metadataSerie.synopsis !== 'undefined' && metadataSerie.synopsis){  %>
+                <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-700 col-span-3"><b>Sinopse:</b> <%= metadataSerie.synopsis %></p>
+            <% }%>
+
+        </div><br><br>
+
+        <!-- PLAYER -->
         <div class="col-span-2">
             <section id="video" class="<%= metadataSerie.type == 'serie' ? 'hidden' : 'block' %> aspect-video p-5 w-full">
-                
-
-                <video id="videoElement" class="aspect-video w-full"  controls autoplay>
-                    <source   src="<%= typeof srcStreaming !== 'undefined' && srcStreaming ? srcStreaming : '' %>" type="video/mp4">
+                <video id="videoElement" class="h-auto w-full aspect-video "  controls autoplay  poster="https://sm.ign.com/ign_br/screenshot/default/filmes-series-2021_dsfb.jpg"  >  <!-- audio/ogg; codecs="vorbis" | audio/webm; codecs="opus" |  audio/mp4; codecs="mp4a.40.2" -->
+                    <source    src="<%= typeof srcStreaming !== 'undefined' && srcStreaming ? srcStreaming : '' %>" type="video/webm"  class="aspect-video"  >
                     Your browser does not support the video tag.
                 </video>
             </section>

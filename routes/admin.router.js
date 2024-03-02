@@ -1,6 +1,7 @@
 //### ROTA ADMIN ###    
 const express = require('express')
 const router = express.Router()
+const Metadata = require('../db/models/metadata.schema')
 
 //CONTROLLERS
 
@@ -21,6 +22,13 @@ router.post('/newMetadata',uploadImage, metadataController.newMetadata);
 router.get('/autoSaveFilm', filmController.saveFilm)
 
 router.post('/atualizar-conteudo', uploadImage, metadataController.update);
+
+
+router.get('/atualizar-conteudo', async (req, res)=>{
+    const data = await Metadata.find({})
+
+    res.render('updateContentView', {conteudos: data})
+});
 
 
 //BUSCAR CONTEUDO

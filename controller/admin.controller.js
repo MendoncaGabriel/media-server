@@ -5,24 +5,21 @@
 const MetadataSchema = require('../db/models/metadata.schema') 
 const SerieSchema = require('../db/models/serie.schema')
 const FilmSchema = require('../db/models/film.schema')
-const UserSchema = require('../db/models/user.schema')
 
 const fs = require('fs');
 const path = require('path');
-const rangeParser = require('range-parser');
 const { promisify } = require('util');
-const metadataSchema = require('../db/models/metadata.schema');
 const readdir = promisify(fs.readdir);
 //--------------------------------------------------------------------
 
 //ROTA 100% FUNCIONAL
 exports.dataRefresh = async (req, res) => {
   try {
-    const listForSave = [];
-    const listForSaveFilm = []
+    let listForSave = [];
+    let listForSaveFilm = []
 
     // BUSCAR METADADOS CADASTRADOS
-    const metadados = await MetadataSchema.find();
+    const metadados = await MetadataSchema.find({});
 
     //BUSCAR ARQUIVOS SALVOS NA PASTA
     for (const element of metadados) {
@@ -53,13 +50,20 @@ exports.dataRefresh = async (req, res) => {
               if (match) {
                 const episodeNumber = Number(match[1]);
 
-                listForSave.push({
-                  type: element.type,
-                  name: element.name,
-                  season: seasonNumber,
-                  episode: episodeNumber,
-                  file: caminhoCompletoEpisodioSerie,
-                });
+                // Verificar se todas as propriedades estão presentes
+                if (element.type && element.name && seasonNumber && episodeNumber && caminhoCompletoEpisodioSerie) {
+                  // Adicionar à lista apenas se todas as propriedades estiverem presentes
+                  listForSave.push({
+                    type: element.type,
+                    name: element.name,
+                    season: seasonNumber,
+                    episode: episodeNumber,
+                    file: caminhoCompletoEpisodioSerie,
+                  });
+                } else {
+                  console.log('Algumas propriedades estão ausentes. O objeto não será adicionado à lista.');
+                }
+
               }
             }
           }
@@ -71,20 +75,29 @@ exports.dataRefresh = async (req, res) => {
         const filmPath = path.join(`${element.disc}:`, 'media-server', element.type);
 
         // LISTAR FILMES
+        const validExtensions = ['.mp4', '.avi', '.mkv', '.MP4', '.MKV'];
         const films = await readdir(filmPath);
 
         for (const film of films) {
           const caminhoCompletoFilm = path.join(filmPath, film);
-          //REMOVE EXTENÇÃO DO ARQUIVO
-          const nomeSemExtensao = film.split(".")[0].replace(/-/g, ' ').trim();
-
-
+        
+          // Verifica se o arquivo possui uma extensão válida
+          const extensao = path.extname(film).toLowerCase();
+          if (!validExtensions.includes(extensao)) {
+            console.log(`Ignorando arquivo não suportado: ${caminhoCompletoFilm}`);
+            continue;
+          }
+        
+          // Remove extensão do arquivo
+          const nomeSemExtensao = path.parse(film).name.trim();
+        
           listForSaveFilm.push({
             type: element.type,
             name: nomeSemExtensao,
             file: caminhoCompletoFilm,
-          })
+          });
         }
+        
       } else {
         return res.status(422).json({ msg: 'Tipo não definido', element });
       }
@@ -93,6 +106,33 @@ exports.dataRefresh = async (req, res) => {
 
     /////////////SINCRONIZAR SERIES
     const seriesInDataBase = await SerieSchema.find();
+
+
+
+    
+    // Remover filmes repetidos----------------------------------------------
+    let listaSemRepeticao = listForSaveFilm.filter((filme, index, self) =>
+      index === self.findIndex((f) => (
+        f.name === filme.name && f.file === filme.file
+      ))
+    );
+    listForSaveFilm = listaSemRepeticao;
+
+
+    //Remover series repetidas-------------------------------------
+    let listaSemRepeticaoSerie = listForSave.filter((element, index, self) =>
+      index === self.findIndex((f) => (
+        f.type === element.type &&
+        f.name === element.name &&
+        f.season === element.season &&
+        f.episode === element.episode &&
+        f.file === element.file
+      ))
+    );
+    listForSave = listaSemRepeticaoSerie;
+
+
+
 
     // Itens salvos no banco de dados mas não localmente - REMOVER DA BASE DE DADOS
     const itemsToRemove = seriesInDataBase.filter(existingElement =>
