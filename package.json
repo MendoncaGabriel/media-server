@@ -20,6 +20,7 @@
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "ffmpeg-static": "^5.2.0",
+    "ffmpeg-stream": "^0.7.0",
     "ffprobe-static": "^3.1.0",
     "fluent-ffmpeg": "^2.1.2",
     "http-errors": "~1.6.3",
@@ -32,6 +33,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.0.3",
     "range-parser": "^1.2.1",
+    "ws": "^8.16.0",
     "zerotier-service": "^0.5.0"
   },
   "devDependencies": {

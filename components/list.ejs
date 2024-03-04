@@ -1,88 +1,91 @@
-<% if(typeof season !== 'undefined' && season){  %>
-    <ul>
-        <% Object.keys(season).sort((a, b) => a - b).forEach(pageNumber => { %>
-            <li class="my-2 py-3 px-4">
-                <button class="shadow-sm bg-gray-100 px-4 block w-full text-left py-2" onclick="toggleList('<%= pageNumber %>')">
-                    <strong>Temporada <%= pageNumber %></strong>
-                </button>
-                <ul id="season<%= pageNumber %>" class="overflow-hidden h-0">
+<div class="max-h-96 overflow-auto w-full">
+    <% if(typeof season !== 'undefined' && season){  %>
+        <ul>
+            <% Object.keys(season).sort((a, b) => a - b).forEach(pageNumber => { %>
+                <li class="my-2 py-1 px-4">
 
-                    <% season[pageNumber].sort((a, b) => a.episode - b.episode).forEach(episode => { %>
-                        <li class="w-full" id="<%= episode._id %>">
-                            <button 
-                                onclick="openVideo('/player/serie/<%= episode._id %>', this), marcarItem('<%= episode._id %>')" 
-                                class="hover:bg-gray-200 text-left h-full px-4 py-2 block w-full "
-                            >
-                                Episodio <%= episode.episode %>
-                            </button>
-                        </li>
-                    <% }); %>
-                    
-                </ul>
-            </li>
-        <% }); %>
-    </ul>
-<% } %>
+                    <button class="shadow-sm bg-gray-100 px-4 block w-full text-left py-2" data-season="<%= pageNumber %>">
+                        <strong>Temporada <%= pageNumber %></strong>
+                    </button>
+
+                    <ul id="season<%= pageNumber %>" class="overflow-hidden max-h-96 overflow-y-auto temporada duration-300 transition-max-height">
+                        <% season[pageNumber].sort((a, b) => a.episode - b.episode).forEach(episode => { %>
+                            <li class="w-full  liList" id="<%= episode._id %>">
+                                <button 
+                                    onclick="openVideo('/player/serie/<%= episode._id %>', this), marcarItem('<%= episode._id %>')" 
+                                    class="hover:bg-gray-200 text-left h-full px-4 py-2 block w-full bg-gray-900 text-gray-50 hover:text-gray-900"
+                                    data-episode-id="<%= episode._id %>"
+                                >
+                                    Episódio <%= episode.episode %>
+                                </button>
+                            </li>
+                        <% }); %>
+                    </ul>
+                </li>
+            <% }); %>
+        </ul>
+    <% } %>
+</div>
 
 <script>
+    // Função para marcar/desmarcar um item
+    function toggleItemClass(item, className) {
+        item.classList.toggle(className);
+    }
 
-    // Função para marcar o item
     function marcarItem(episodeId) {
-        // Verifica se o array já existe no localStorage
         let markedItems = JSON.parse(localStorage.getItem('markedItems')) || [];
-
-        // Verifica se o item já está marcado
         const index = markedItems.indexOf(episodeId);
+
         if (index === -1) {
-            // Se não estiver marcado, adiciona ao array
             markedItems.push(episodeId);
         } else {
-            // Se estiver marcado, remove do array
             markedItems.splice(index, 1);
         }
 
-        // Salva o array atualizado no localStorage
         localStorage.setItem('markedItems', JSON.stringify(markedItems));
 
-        // Atualiza a classe do botão na interface
         const button = document.querySelector(`button[data-episode-id="${episodeId}"]`);
-        if (index === -1) {
-            button.classList.add('bg-green-200');
+
+        if (button) {
+            toggleItemClass(button, 'bg-green-600');
         } else {
-            button.classList.remove('bg-green-200');
+            console.error(`Botão com ID ${episodeId} não encontrado.`);
         }
     }
 
-
-    // Função para aplicar a classe bg-green-200 às li correspondentes
     function aplicarClasseBG() {
-        // Obtém os IDs armazenados no localStorage
         let markedItems = JSON.parse(localStorage.getItem('markedItems')) || [];
-
-        // Itera sobre todas as li no documento
-        const listaItems = document.querySelectorAll('li');
+        const listaItems = document.querySelectorAll('.liList');
 
         listaItems.forEach((item) => {
+            const episodeId = item.id; // Pegue o ID diretamente do elemento
+            console.log(episodeId);
 
-            if(item.id){
-                console.log(item.id)
-
-                if (markedItems.includes(item.id)) {
-                    // Aplica a classe bg-green-200 à li
-                    item.classList.add('bg-green-200');
-                }
+            if (markedItems.includes(episodeId)) {
+                toggleItemClass(item.querySelector('button'), 'bg-green-600');
             }
-
         });
     }
 
-    // Chama a função ao carregar a página
-    aplicarClasseBG();
+    function toggleList(pageNumber) {
+        const seasonList = document.getElementById(`season${pageNumber}`);
+        const isOpen = seasonList.style.maxHeight !== '0px' && seasonList.style.maxHeight !== '';
 
+        const temporadas = document.querySelectorAll('.temporada');
+        temporadas.forEach((e) => {
+            e.style.maxHeight = '0';
+        });
 
+        if (!isOpen) {
+            seasonList.style.maxHeight = seasonList.scrollHeight > 96 ? '96rem' : seasonList.scrollHeight + 'px';
+        } else {
+            seasonList.style.maxHeight = '0';
+        }
+    }
 
     function openVideo(link, button) {
-        button.classList.add('bg-green-200');
+        button.classList.add('bg-green-600');
 
         document.getElementById('video').classList.remove('hidden')
         // Atualiza o src do elemento de vídeo
@@ -91,17 +94,25 @@
         // Reinicia o vídeo para garantir que ele seja recarregado
         document.getElementById('videoElement').load();
     }
+    // Chama a função ao carregar a página
+    aplicarClasseBG();
 
-    function toggleList(pageNumber) {
-        const seasonList = document.getElementById('season' + pageNumber);
-        if (seasonList.classList.contains('h-0')) {
-            // Se a lista está contraída, expande
-            seasonList.classList.remove('h-0');
-            seasonList.classList.add('h-full');
-        } else {
-            // Se a lista está expandida, contrai
-            seasonList.classList.remove('h-full');
-            seasonList.classList.add('h-0');
-        }
-    }
+    // Adiciona Event Listeners aos botões e episódios
+    document.addEventListener('DOMContentLoaded', function () {
+        const buttons = document.querySelectorAll('button[data-season]');
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+                const seasonNumber = this.getAttribute('data-season');
+                toggleList(seasonNumber);
+            });
+        });
+
+        const episodes = document.querySelectorAll('.liList button');
+        episodes.forEach(episode => {
+            episode.addEventListener('click', function () {
+                const episodeId = this.getAttribute('data-episode-id');
+                marcarItem(episodeId);
+            });
+        });
+    });
 </script>

@@ -25,7 +25,8 @@ exports.dataRefresh = async (req, res) => {
     for (const element of metadados) {
       if (element.type === 'serie') {
         // FORMATAR NOME PARA NOME DA PASTA
-        const nameFolder = element.name.toLowerCase().replace(/[^a-z0-9- ]/g, '').replace(/\s+/g, '-').trim();
+        // const nameFolder = element.name.toLowerCase().replace(/[^a-z0-9- ]/g, '').replace(/\s+/g, '-').trim();
+        const nameFolder = element.name.toLowerCase().replace(/:/, '').trim();
 
         // CAMINHO PARA SERIE ESPECIFICA
         const seriePath = path.join(`${element.disc}:`, 'media-server', element.type, nameFolder);
