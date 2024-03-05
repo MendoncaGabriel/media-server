@@ -25,6 +25,20 @@
       </select>
     </div>
 
+
+
+    <div class="mb-4">
+      <label for="autoChange" class="block text-sm font-medium text-gray-600">Preencher com objeto:</label>
+      <div class="">
+        <button type="button" onclick="copyQuestForForm()" class="bg-gray-400 px-2 py-1">Copiar Pergunta para GPT</button>
+        <textarea name="" id="autoChange"  class="mt-1 p-2 w-full border rounded-md" cols="30" rows="5" ></textarea>
+     
+        <button type="button" onclick="autoChangeForm()" class="bg-blue-700 hover:bg-blue-500 text-white px-4 py-2 ml-auto block  min-w-60 flex-none rounded-md text-sm">Prencher Automático</button>
+      </div>
+    </div>
+
+
+
     <div class="mb-4">
       <label for="name" class="block text-sm font-medium text-gray-600">Nome:</label>
       <input type="text" id="name" name="name" required class="mt-1 p-2 w-full border rounded-md">
@@ -71,7 +85,7 @@
     </div>
 
     <div class="mt-4">
-      <input type="submit" value="Salvar" class="bg-blue-500 w-full text-white p-2 rounded-md cursor-pointer">
+      <input type="submit" value="Atualizar Metadados" id="updateButton" class="bg-blue-500 w-full text-white p-2 rounded-md cursor-pointer">
     </div>
 
     
@@ -82,6 +96,59 @@
 
 
 <script>
+
+
+function copyQuestForForm(){
+  // Seleciona o elemento de texto
+  var name = document.getElementById("name").value
+  if(!name){
+    return alert('Selecione um conteudo!')
+  }
+
+  // Cria um elemento de área de texto temporário
+  var inputTemporario = document.createElement("textarea");
+  inputTemporario.value = `Me de os seguintes dados sobre o "${name}"" me etregue em JSON
+    {
+      "releaseYear": "",  //me entregue e string (não pode ser array)
+      "genre": "",      //me entregue e string (não pode ser array)
+      "creator": "",    //me entregue e string (não pode ser array)    
+      "rating": "",     //numero inteiro
+      "synopsis": ""    //me entregue e string (não pode ser array)
+    }
+  `;
+
+  // Adiciona o elemento temporário à página
+  document.body.appendChild(inputTemporario);
+
+  // Seleciona e copia o texto na área de texto temporária
+  inputTemporario.select();
+  document.execCommand("copy");
+
+  // Remove o elemento temporário
+  document.body.removeChild(inputTemporario);
+
+  console.log("Texto copiado: " + name);
+}
+
+function autoChangeForm(){
+  const i = document.getElementById('autoChange').value
+  console.log(i)
+  const object = JSON.parse(i)
+
+  document.getElementById('releaseYear').value = object.releaseYear || ''
+  document.getElementById('genre').value = object.genre || ''
+  document.getElementById('creator').value = object.creator || ''
+  document.getElementById('rating').value = object.rating || ''
+  document.getElementById('synopsis').value = object.synopsis || ''
+  document.getElementById('synopsis').innerText = object.synopsis || ''
+
+
+  document.getElementById('updateButton').scrollIntoView({ behavior: 'smooth' });
+}
+
+
+
+
   function previewImage(input) {
     var imagePreview = document.getElementById('imagePreview');
     if (input.files && input.files[0]) {
@@ -132,6 +199,14 @@
     document.getElementById('rating').value = data.rating ? data.rating : ''
     document.getElementById('synopsis').value = data.synopsis ? data.synopsis : ''
     document.getElementById('synopsis').innerText = data.synopsis ? data.synopsis : ''
+
+
+
+    document.getElementById('autoChange').innerText = ''
+    document.getElementById('autoChange').value = ''
+
+    
   }
+
 
 </script>

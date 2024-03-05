@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 const metadataSchema = new mongoose.Schema({
     name: {
         type:String,
-        required: true
+        required: true,
+        text: true
     },
     disc: {
         type:String,

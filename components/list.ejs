@@ -1,21 +1,16 @@
 <div class="max-h-96 overflow-auto w-full">
-    <% if(typeof season !== 'undefined' && season){  %>
-        <ul>
+    <% if (typeof season !== 'undefined' && season) { %>
+        <ul id="accordion">
             <% Object.keys(season).sort((a, b) => a - b).forEach(pageNumber => { %>
                 <li class="my-2 py-1 px-4">
-
-                    <button class="shadow-sm bg-gray-100 px-4 block w-full text-left py-2" data-season="<%= pageNumber %>">
+                    <button class="shadow-sm bg-gray-100 px-4 block w-full text-left py-2" onclick="toggleSeason('<%= pageNumber %>')">
                         <strong>Temporada <%= pageNumber %></strong>
                     </button>
 
-                    <ul id="season<%= pageNumber %>" class="overflow-hidden max-h-96 overflow-y-auto temporada duration-300 transition-max-height">
+                    <ul id="season<%= pageNumber %>" class="overflow-hidden max-h-96 overflow-y-auto temporada duration-300 transition-max-height hidden">
                         <% season[pageNumber].sort((a, b) => a.episode - b.episode).forEach(episode => { %>
                             <li class="w-full  liList" id="<%= episode._id %>">
-                                <button 
-                                    onclick="openVideo('/player/serie/<%= episode._id %>', this), marcarItem('<%= episode._id %>')" 
-                                    class="hover:bg-gray-200 text-left h-full px-4 py-2 block w-full bg-gray-900 text-gray-50 hover:text-gray-900"
-                                    data-episode-id="<%= episode._id %>"
-                                >
+                                <button onclick="openVideo('/player/serie/<%= episode._id %>', this), marcarItem('<%= episode._id %>')" class="hover:bg-gray-200 text-left h-full px-4 py-2 block w-full bg-gray-900 text-gray-50 hover:text-gray-900" data-episode-id="<%= episode._id %>">
                                     Episódio <%= episode.episode %>
                                 </button>
                             </li>
@@ -24,95 +19,27 @@
                 </li>
             <% }); %>
         </ul>
+
+        <script>
+            function toggleSeason(pageNumber) {
+                var seasonElement = document.getElementById('season' + pageNumber);
+                seasonElement.classList.toggle('hidden');
+            }
+
+            function openVideo(link, button) {
+                button.classList.add('bg-green-600');
+
+                document.getElementById('video').classList.remove('hidden')
+                // Atualiza o src do elemento de vídeo
+                document.getElementById('videoElement').src = link;
+
+                // Reinicia o vídeo para garantir que ele seja recarregado
+                document.getElementById('videoElement').load();
+
+
+                // Rolar a página suavemente até o elemento com o ID "videoElement"
+                document.getElementById('videoElement').scrollIntoView({ behavior: 'smooth' });
+            }
+        </script>
     <% } %>
 </div>
-
-<script>
-    // Função para marcar/desmarcar um item
-    function toggleItemClass(item, className) {
-        item.classList.toggle(className);
-    }
-
-    function marcarItem(episodeId) {
-        let markedItems = JSON.parse(localStorage.getItem('markedItems')) || [];
-        const index = markedItems.indexOf(episodeId);
-
-        if (index === -1) {
-            markedItems.push(episodeId);
-        } else {
-            markedItems.splice(index, 1);
-        }
-
-        localStorage.setItem('markedItems', JSON.stringify(markedItems));
-
-        const button = document.querySelector(`button[data-episode-id="${episodeId}"]`);
-
-        if (button) {
-            toggleItemClass(button, 'bg-green-600');
-        } else {
-            console.error(`Botão com ID ${episodeId} não encontrado.`);
-        }
-    }
-
-    function aplicarClasseBG() {
-        let markedItems = JSON.parse(localStorage.getItem('markedItems')) || [];
-        const listaItems = document.querySelectorAll('.liList');
-
-        listaItems.forEach((item) => {
-            const episodeId = item.id; // Pegue o ID diretamente do elemento
-            console.log(episodeId);
-
-            if (markedItems.includes(episodeId)) {
-                toggleItemClass(item.querySelector('button'), 'bg-green-600');
-            }
-        });
-    }
-
-    function toggleList(pageNumber) {
-        const seasonList = document.getElementById(`season${pageNumber}`);
-        const isOpen = seasonList.style.maxHeight !== '0px' && seasonList.style.maxHeight !== '';
-
-        const temporadas = document.querySelectorAll('.temporada');
-        temporadas.forEach((e) => {
-            e.style.maxHeight = '0';
-        });
-
-        if (!isOpen) {
-            seasonList.style.maxHeight = seasonList.scrollHeight > 96 ? '96rem' : seasonList.scrollHeight + 'px';
-        } else {
-            seasonList.style.maxHeight = '0';
-        }
-    }
-
-    function openVideo(link, button) {
-        button.classList.add('bg-green-600');
-
-        document.getElementById('video').classList.remove('hidden')
-        // Atualiza o src do elemento de vídeo
-        document.getElementById('videoElement').src = link;
-
-        // Reinicia o vídeo para garantir que ele seja recarregado
-        document.getElementById('videoElement').load();
-    }
-    // Chama a função ao carregar a página
-    aplicarClasseBG();
-
-    // Adiciona Event Listeners aos botões e episódios
-    document.addEventListener('DOMContentLoaded', function () {
-        const buttons = document.querySelectorAll('button[data-season]');
-        buttons.forEach(button => {
-            button.addEventListener('click', function () {
-                const seasonNumber = this.getAttribute('data-season');
-                toggleList(seasonNumber);
-            });
-        });
-
-        const episodes = document.querySelectorAll('.liList button');
-        episodes.forEach(episode => {
-            episode.addEventListener('click', function () {
-                const episodeId = this.getAttribute('data-episode-id');
-                marcarItem(episodeId);
-            });
-        });
-    });
-</script>

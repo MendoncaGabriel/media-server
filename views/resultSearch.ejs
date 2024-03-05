@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado da pesquisa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950">
+
+    <%- include('../components/navbar.ejs') %>
+    
+    <div class="md:mt-20 mt-52">
+        
+        <div class="z-50  m-auto  ">
+            <h2 class="text-gray-100 text-lg text-center">Resultados para: <%= arguments %></h2>
+            <% if(typeof msg != "undefined" && msg){ %>
+                <h2 class="text-gray-100 md:text-5xl text-2xl text-center"><%= msg  %></h2>
+            <% } %>
+        </div>
+
+        <%- include('../components/gallery.ejs') %>
+    </div>
+
+
+
+
+
+    <div class="flex w-full items-center justify-center  space-x-4 my-10">
+        <a href="" id="back" class="min-w-32 hidden px-4 py-2 max-w-40  text-center text-white bg-blue-600 hover:bg-blue-500 rounded-md">Voltar</a>
+        <% if(typeof next != "undefined" && next) { %>
+            <a href="" id="next" class="min-w-32 <%= next ? 'block' : 'hidden'  %>  px-4 py-2 max-w-40  text-center text-white bg-blue-600 hover:bg-blue-500 rounded-md">Proximo</a>
+        <% } %>
+    </div>
+
+    <script>
+       const url = window.location.href
+        const matchResult = url.match(/\/(\w+)\/page\/(\d+)/);
+
+        if (matchResult) {
+            const [, type, page] = matchResult; // Ignora o primeiro elemento (correspondência completa)
+        
+            const objetoResultado = {
+                type: type,
+                page: parseInt(page, 10) // Converte a string para um número
+            };
+
+            document.getElementById('next').href = `/${objetoResultado.type}/page/${objetoResultado.page + 1}`
+            if(objetoResultado.page > 1){
+                document.getElementById('back').classList.replace("hidden", "block")
+                document.getElementById('back').href =  `/${objetoResultado.type}/page/${objetoResultado.page - 1}`
+            }
+            
+            
+        }else{
+            
+            document.getElementById('next').href = "/filmes/page/2"
+            // document.getElementById('next').classList.replace("block", "hidden")
+        }
+    </script>
+
+</body>
+</html>

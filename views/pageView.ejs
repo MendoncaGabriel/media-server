@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= metadataSerie.name %></title>
     <script src="https://cdn.tailwindcss.com"></script>
+
     
 </head>
 <body class="bg-gray-950">
 
     <%- include('../components/navbar.ejs') %>
 
-    <section class="md:grid md:grid-cols-3 max-w-screen-xl m-auto lg:p-10 p-5  shadow-sm min-h-screen items-start">
+    <section class="md:grid md:grid-cols-3 max-w-screen-xl m-auto lg:p-10 p-5  shadow-sm min-h-screen items-start md:mt-16 mt-40  md:pt-0 pt-14">
 
 
         <!-- CAPA -->
@@ -33,6 +34,9 @@
             <% if(typeof metadataSerie.creator !== 'undefined' && metadataSerie.creator){  %>
                 <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-100 col-span-3"><b>Criador:</b> <%= metadataSerie.creator %></p>
             <% }%>
+            <% if(typeof metadataSerie.rating !== 'undefined' && metadataSerie.rating){  %>
+                <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-100 col-span-3"><b>Avaliação:</b> <%= metadataSerie.rating %></p>
+            <% }%>
 
             <% if(typeof metadataSerie.synopsis !== 'undefined' && metadataSerie.synopsis){  %>
                <br> <p class=" my-2 md:my-0 md:text-left md:text-base text-base text-gray-100 col-span-3"><b>Sinopse:</b> <%= metadataSerie.synopsis %></p>
@@ -45,13 +49,16 @@
 
         <!-- PLAYER -->
         <div class="col-span-3 my-10">
-            <section id="video" class="<%= metadataSerie.type == 'serie' ? 'hidden' : 'block' %> aspect-video p-5 w-full">
+            <section id="video" class="<%= metadataSerie.type == 'serie' ? 'hidden' : 'block' %> aspect-video p-5 w-full " controls preload="auto">
                 <video id="videoElement" class="h-auto w-full aspect-video "  controls autoplay  poster="https://sm.ign.com/ign_br/screenshot/default/filmes-series-2021_dsfb.jpg"  >  <!-- audio/ogg; codecs="vorbis" | audio/webm; codecs="opus" |  audio/mp4; codecs="mp4a.40.2" -->
-                    <source    src="<%= typeof srcStreaming !== 'undefined' && srcStreaming ? srcStreaming : '' %>" type="video/mp4"  class="aspect-video"  >
+                    <source id="teste"   src="<%= typeof srcStreaming !== 'undefined' && srcStreaming ? srcStreaming : '' %>" type="video/mp4"  class="aspect-video"  >
                     Your browser does not support the video tag.
                 </video>
+
             </section>
         </div>
+
+
 
 
     </section> 

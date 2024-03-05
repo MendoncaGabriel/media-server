@@ -6,29 +6,35 @@ const cache = require('memory-cache');
 const cacheTime = 10 * 60 * 60 * 1 //1h
 
 
-exports.Series = async (req, res) => {
+
+
+
+exports.SeriesPagination = async (req, res) => {
   try {
-    const page = req.query.page || 1; 
+    const page = req.params.page || 1; 
     const cacheKey = `seriesPageCache_${page}`;
     const cachedData = cache.get(cacheKey);
 
     if (cachedData) {
       console.log('Pagina com cache')
-      res.render('homeView', { seriesPage: cachedData });
+      res.render('homeView', { seriesPage: cachedData.seriesPage, next: cachedData.next })
     } else {
       console.log('Pagina sem cache')
-      const itemsPerPage = 10;
+      const itemsPerPage = 20;
       const skip = (page - 1) * itemsPerPage;
 
       //TROQUE AQUI O QUE VAI APARECER NA GALERIA DE HOME FILMES OU SERIES
-      const seriesPage = await MetadataSchema.find({ type: "serie" }).skip(skip).limit(itemsPerPage);
+      const seriesPage = await MetadataSchema.find({ type: "serie" }).sort({ _id: -1 }).skip(skip).limit(itemsPerPage);
+      const next = seriesPage.length < 20 ? false : true
 
       if (seriesPage) {
-        cache.put(cacheKey, seriesPage, cacheTime ); 
+        const saveCache = {seriesPage: seriesPage, next: next }
+        cache.put(cacheKey, saveCache, cacheTime );
 
-        res.render('homeView', { seriesPage: seriesPage });
+
+        res.render('homeView', { seriesPage: seriesPage, next: next });
       } else {
-        res.render('homeView');
+        res.render('homeView', {next: next});
       }
     }
   } catch (error) {
@@ -36,29 +42,35 @@ exports.Series = async (req, res) => {
   }
 };
 
-exports.Filmes = async (req, res) => {
+
+
+
+exports.FilmesPagination = async (req, res) => {
   try {
-    const page = req.query.page || 1; 
+    const page = req.params.page || 1; 
     const cacheKey = `filmsPageCache_${page}`;
     const cachedData = cache.get(cacheKey);
 
     if (cachedData) {
       console.log('Pagina com cache')
-      res.render('homeView', { seriesPage: cachedData });
+      res.render('homeView', { seriesPage: cachedData.seriesPage, next: cachedData.next });
+
     } else {
       console.log('Pagina sem cache')
-      const itemsPerPage = 100; //MAXIMO 20
+      const itemsPerPage = 20; //MAXIMO 20
       const skip = (page - 1) * itemsPerPage;
 
       //TROQUE AQUI O QUE VAI APARECER NA GALERIA DE HOME FILMES OU SERIES
-      const seriesPage = await MetadataSchema.find({ type: "film" }).skip(skip).limit(itemsPerPage);
+      const seriesPage = await MetadataSchema.find({ type: "film" }).sort({ _id: -1 }).skip(skip).limit(itemsPerPage);
+      const next = seriesPage.length < 20 ? false : true
 
       if (seriesPage) {
-        cache.put(cacheKey, seriesPage, cacheTime ); 
+        const saveCache = {seriesPage: seriesPage, next: next }
+        cache.put(cacheKey, saveCache, cacheTime ); 
 
-        res.render('homeView', { seriesPage: seriesPage });
+        res.render('homeView', { seriesPage: seriesPage, next: next });
       } else {
-        res.render('homeView');
+        res.render('homeView', {next: next});
       }
     }
   } catch (error) {

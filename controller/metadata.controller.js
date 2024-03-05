@@ -20,6 +20,14 @@ exports.newMetadata = async (req, res) => {
     const { name, type, releaseYear, genre, creator, rating, synopsis, disc } = req.body;
 
     try {
+
+        const metadataExist = await Metadata.find({ name: name });
+
+        if (metadataExist.length > 0) {
+            return res.send(`ITEM COM MESMO NOME JÁ CADASTRADO`);
+        }
+        
+
         const newMetaData = new Metadata({ name, type, releaseYear, genre, creator, rating, synopsis, disc, image:  '/images/' + imageCover });
         const doc = await newMetaData.save();
 

@@ -13,6 +13,7 @@ const metadataRouter = require('./routes/metadata.router');
 const homeRouter = require('./routes/home.router');
 const playerRouter = require('./routes/player.router')
 const serieRouter = require('./routes/serie.router')
+const searchRouter = require('./routes/search.router')
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use('/admin', adminRouter);
 app.use('/film', filmRouter);
 app.use('/metadata', metadataRouter);
 app.use('/serie', serieRouter);
+app.use('/search', searchRouter);
 
 
 
