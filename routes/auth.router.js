@@ -1,22 +1,8 @@
-//### ROTA AUTH ###    
 require('dotenv').config()
 const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcrypt')
-
-//CONTROLLERS
 const authController = require('../controller/auth.controller')
-const filmController = require('../controller/film.controller')
-const metadataController = require('../controller/metadata.controller')
-const pageController = require('../controller/page.controller')
-const scannerController = require('../controller/scanner.controller')
-const seriesController = require('../controller/series.controller')
-
-//MIDDLEWARE
-const uploadImage = require('../middleware/uploadImage.middleware');
-const uploadVideo = require('../middleware/uploadVideo.middleware')
-const checkToken = require('../middleware/checkToken.middleware')
-
 
 async function validationRegister(req, res, next){
     function checkEmail(email){

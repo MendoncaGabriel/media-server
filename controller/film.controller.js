@@ -1,13 +1,7 @@
-//### CONTROLLER FILM ###
-
 const fs = require('fs');
 const path = require('path');
-
-//SCHEMAS DATABASE
 const MetadataSchema = require('../db/models/metadata.schema') 
 const FilmSchema = require('../db/models/film.schema')
-
-
 
 //PAGINA DO FILME
 exports.filmPage = async (req, res) => {
@@ -27,8 +21,6 @@ exports.filmPage = async (req, res) => {
     res.status(500).json({ msg: 'Erro do Servidor Interno', error });
   }
 }
-
-
 
 //PAGINAÇÃO DE FILMES - ok
 exports.page = async (req, res) => {

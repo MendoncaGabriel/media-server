@@ -1,6 +1,4 @@
-//### CONTROLLER AUTH ###
 
-//SCHEMAS DATABASE
 const MetadataSchema = require('../db/models/metadata.schema') 
 const SerieSchema = require('../db/models/serie.schema')
 const FilmSchema = require('../db/models/film.schema')

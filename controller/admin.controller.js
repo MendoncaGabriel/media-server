@@ -1,7 +1,3 @@
-//### CONTROLLER ADMIN ###
-
-
-//SCHEMAS DATABASE
 const MetadataSchema = require('../db/models/metadata.schema') 
 const SerieSchema = require('../db/models/serie.schema')
 const FilmSchema = require('../db/models/film.schema')
@@ -10,7 +6,6 @@ const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
 const readdir = promisify(fs.readdir);
-//--------------------------------------------------------------------
 
 //ROTA 100% FUNCIONAL
 exports.dataRefresh = async (req, res) => {
@@ -195,8 +190,6 @@ exports.dataRefresh = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
-
 
 //SALVAR ARQUIVOS NO BANCO DE DADOS
 exports.saveSerie = async (req, res)=>{

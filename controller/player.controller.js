@@ -2,8 +2,29 @@ const SerieSchema = require('../db/models/serie.schema');
 const FilmSchema = require('../db/models/film.schema');
 const fs = require('fs');
 const { promisify } = require('util');
-const statAsync = promisify(fs.stat);
 
+const cache = require('memory-cache');
+const cacheTime = 60 * 60 * 24 *2 //2 dias
+
+async function getVideo(id, type) {
+  const cacheKey = `${type}-${id}`;
+  const cachedVideo = cache.get(cacheKey);
+
+  if (cachedVideo) {
+    console.log(`Com cache: ${cachedVideo.name}`);
+    return cachedVideo;
+  } else {
+    console.log(`Sem cache, buscando no banco de dados: ${id}`);
+    const video = type === 'film' ? await FilmSchema.findById(id) : await SerieSchema.findById(id);
+
+    if (!video.file) {
+      return null; // Tratar caso o arquivo não exista
+    }
+
+    cache.put(cacheKey, video, cacheTime);
+    return video;
+  }
+}
 
 //Este controller e mais rapido e otimizado, inicia o video mais rapido e carrega a troca mais rapida, suporta varias paginas ao mesmo tempo
 exports.player = async (req, res) => {
@@ -17,8 +38,9 @@ exports.player = async (req, res) => {
   //buscar arquivo
   const id = req.params.id;
   const type = req.params.type;
-  const video = type === 'film' ? await FilmSchema.findById(id) : await SerieSchema.findById(id);
+  const video = await getVideo(id, type);
   const movieFile = video.file;
+  // const video = type === 'film' ? await FilmSchema.findById(id) : await SerieSchema.findById(id);
 
   if(!video.file){
     res.status(200).json({msg: 'Erro ao reproduzir este conteudo, desculpe! :('})

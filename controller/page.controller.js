@@ -1,111 +1,79 @@
-//### CONTROLLER PAGE ###
-
-//SCHEMAS DATABASE
-const MetadataSchema = require('../db/models/metadata.schema') 
+const MetadataSchema = require('../db/models/metadata.schema');
 const cache = require('memory-cache');
-const cacheTime = 10 * 60 * 60 * 1 //1h
+const cacheTime = 60 * 60 * 24 * 2; // 2 dias
+const itemsPerPage = 20;
+
+const renderHomeView = (res, seriesPage, next) => {
+  res.render('homeView', { seriesPage, next });
+};
+
+const getPaginationData = async (page, type) => {
+  const skip = (page - 1) * itemsPerPage;
+  //ordenar do ultimo adicionado para primeiro adicionado
+  // const seriesPage = await MetadataSchema.find({ type }).sort({ _id: -1 }).skip(skip).limit(itemsPerPage);
 
 
+  //ORDENA DA MAIOR AVALIAÇÃO PARA A MENOR
+  const seriesPage = await MetadataSchema.find({ type }).sort({ rating: -1 }).skip(skip).limit(itemsPerPage);
 
+  const next = seriesPage.length < itemsPerPage ? false : true;
+  return { seriesPage, next };
+};
 
+const getAndCacheData = async (req, res, page, cacheKey, type) => {
+  try {
+    const { seriesPage, next } = await getPaginationData(page, type);
+    const saveCache = { seriesPage, next };
+    cache.put(cacheKey, saveCache, cacheTime);
+    renderHomeView(res, seriesPage, next);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 exports.SeriesPagination = async (req, res) => {
-  try {
-    const page = req.params.page || 1; 
-    const cacheKey = `seriesPageCache_${page}`;
-    const cachedData = cache.get(cacheKey);
+  const page = req.params.page || 1;
+  const cacheKey = `seriesPageCache_${page}`;
+  const cachedData = cache.get(cacheKey);
 
-    if (cachedData) {
-      console.log('Pagina com cache')
-      res.render('homeView', { seriesPage: cachedData.seriesPage, next: cachedData.next })
-    } else {
-      console.log('Pagina sem cache')
-      const itemsPerPage = 20;
-      const skip = (page - 1) * itemsPerPage;
-
-      //TROQUE AQUI O QUE VAI APARECER NA GALERIA DE HOME FILMES OU SERIES
-      const seriesPage = await MetadataSchema.find({ type: "serie" }).sort({ _id: -1 }).skip(skip).limit(itemsPerPage);
-      const next = seriesPage.length < 20 ? false : true
-
-      if (seriesPage) {
-        const saveCache = {seriesPage: seriesPage, next: next }
-        cache.put(cacheKey, saveCache, cacheTime );
-
-
-        res.render('homeView', { seriesPage: seriesPage, next: next });
-      } else {
-        res.render('homeView', {next: next});
-      }
-    }
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+  if (cachedData) {
+    renderHomeView(res, cachedData.seriesPage, cachedData.next);
+  } else {
+    await getAndCacheData(req, res, page, cacheKey, "serie");
   }
 };
-
-
-
 
 exports.FilmesPagination = async (req, res) => {
-  try {
-    const page = req.params.page || 1; 
-    const cacheKey = `filmsPageCache_${page}`;
-    const cachedData = cache.get(cacheKey);
+  const page = req.params.page || 1;
+  const cacheKey = `filmsPageCache_${page}`;
+  const cachedData = cache.get(cacheKey);
 
-    if (cachedData) {
-      console.log('Pagina com cache')
-      res.render('homeView', { seriesPage: cachedData.seriesPage, next: cachedData.next });
-
-    } else {
-      console.log('Pagina sem cache')
-      const itemsPerPage = 20; //MAXIMO 20
-      const skip = (page - 1) * itemsPerPage;
-
-      //TROQUE AQUI O QUE VAI APARECER NA GALERIA DE HOME FILMES OU SERIES
-      const seriesPage = await MetadataSchema.find({ type: "film" }).sort({ _id: -1 }).skip(skip).limit(itemsPerPage);
-      const next = seriesPage.length < 20 ? false : true
-
-      if (seriesPage) {
-        const saveCache = {seriesPage: seriesPage, next: next }
-        cache.put(cacheKey, saveCache, cacheTime ); 
-
-        res.render('homeView', { seriesPage: seriesPage, next: next });
-      } else {
-        res.render('homeView', {next: next});
-      }
-    }
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+  if (cachedData) {
+    renderHomeView(res, cachedData.seriesPage, cachedData.next);
+  } else {
+    await getAndCacheData(req, res, page, cacheKey, "film");
   }
 };
 
-exports.Home = async (req, res) => {
-  try {
-    const page = req.query.page || 1; 
-    const cacheKey = `homePageCache_${page}`;
-    const cachedData = cache.get(cacheKey);
+// exports.Home = async (req, res) => {
+//   const page = req.query.page || 1;
+//   const cacheKey = `homePageCache_${page}`;
+//   const cachedData = cache.get(cacheKey);
 
-    if (cachedData) {
-      console.log('Pagina com cache')
-      res.render('homeView', { seriesPage: cachedData });
-    } else {
-      console.log('Pagina sem cache')
-      const itemsPerPage = 20;
-      const skip = (page - 1) * itemsPerPage;
-
-      //TROQUE AQUI O QUE VAI APARECER NA GALERIA DE HOME FILMES OU SERIES
-      const seriesPage = await MetadataSchema.find({ type: "film" }).skip(skip).limit(itemsPerPage);
-
-      if (seriesPage) {
-        cache.put(cacheKey, seriesPage, cacheTime ); 
-
-        res.render('homeView', { seriesPage: seriesPage });
-      } else {
-        res.render('homeView');
-      }
-    }
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-
+//   if (cachedData) {
+//     renderHomeView(res, cachedData);
+//   } else {
+//     try {
+//       const seriesPage = await MetadataSchema.find({ type: "film" }).skip((page - 1) * itemsPerPage).limit(itemsPerPage);
+      
+//       if (seriesPage) {
+//         cache.put(cacheKey, seriesPage, cacheTime);
+//         renderHomeView(res, seriesPage);
+//       } else {
+//         res.render('homeView');
+//       }
+//     } catch (error) {
+//       res.status(500).json({ error: "Internal Server Error" });
+//     }
+//   }
+// };

@@ -1,18 +1,6 @@
-//### CONTROLLER METADATA ###
-
-
-//SCHEMAS DATABASE
-const MetadataSchema = require('../db/models/metadata.schema') 
-const SerieSchema = require('../db/models/serie.schema')
-const FilmSchema = require('../db/models/film.schema')
-const UserSchema = require('../db/models/user.schema')
-
 const fs = require('fs/promises');
 const path = require('path')
 const Metadata = require('../db/models/metadata.schema')
-//--------------------------------------------------------------------
-
-
 
 //SALVAR METADADOS
 exports.newMetadata = async (req, res) => {
@@ -132,4 +120,3 @@ exports.getId = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
-
