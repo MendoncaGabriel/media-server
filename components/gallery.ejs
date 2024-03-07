@@ -5,7 +5,8 @@
     <% seriesPage.forEach(element => { %>
 
       <a href="/<%= element.type %>/<%= element._id %>" title="<%= element.name %>" >
-        <div class=" md:w-64 w-40  rounded-sm overflow-hidden m-auto duration-200 hover:scale-105 hover:shadow">
+        <div class=" md:w-64 w-40  rounded-sm overflow-hidden m-auto duration-200 hover:scale-105 hover:shadow relative">
+          <p class="text-gray-100 bg-red-600 absolute px-4 right-0"><%= element.rating  %></p>
 
           <img class="w-full  object-cover duration-200  md:h-96 h-56" src="<%= element.image %>" alt="<%= element.title %>"> 
 

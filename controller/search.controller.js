@@ -53,8 +53,4 @@ exports.searchItem = async (req, res) =>{
     res.render('resultSearch', {seriesPage: resultados , arguments: termoPesquisa, msg: 'Não encontrado :('})
 
   }
-
-
- 
-
 }

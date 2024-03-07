@@ -3,6 +3,10 @@ URL_DB=###/media-server
 SECRET=###
 
 
+##buildar projeto, basta rodar no terminal
+webpack --mode production
+
+
 
 
 //formulario de cadastro
