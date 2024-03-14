@@ -55,7 +55,7 @@ exports.player = async (req, res) => {
 
     // Parse Range
     // Example: "bytes=32324-"
-    const CHUNK_SIZE = 10 ** 6; // 1MB
+    const CHUNK_SIZE = 2 * 10 ** 6; // 2 MB, por exemplo
     const start = Number(range.replace(/\D/g, ""));
     const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
 
@@ -66,6 +66,7 @@ exports.player = async (req, res) => {
       "Accept-Ranges": "bytes",
       "Content-Length": contentLength,
       "Content-Type": "video/mp4",
+      "Cache-Control": "public, max-age=31536000", // Exemplo de cabeçalho de cache
     };
 
     // HTTP Status 206 for Partial Content
@@ -77,7 +78,8 @@ exports.player = async (req, res) => {
     // Stream the video chunk to the client
     videoStream.pipe(res);
   }catch(erro){
-    console.log('Erro: player.contoller.js - exports.player', erro)
+    console.error('Erro ao executar o código principal:', error);
+    res.status(500).send('Erro interno do servidor');
   }
 }
 

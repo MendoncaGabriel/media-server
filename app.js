@@ -44,6 +44,15 @@ app.use('/serie', serieRouter);
 app.use('/search', searchRouter);
 
 
+//DOWNLOAD
+app.get('/mobile', (req, res) => {
+  res.sendFile('C:/Users/gabri/Documents/GitHub/media-server/public/app/FREEDOM MOBILE.apk')
+});
+app.get('/tv', (req, res) => {
+  res.sendFile('C:/Users/gabri/Documents/GitHub/media-server/public/app/FREEDOM TV.apk')
+});
+
+
 
 
 // Server setup

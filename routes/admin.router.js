@@ -11,7 +11,8 @@ router.post('/newMetadata',uploadImage, metadataController.newMetadata);
 router.get('/autoSaveFilm', filmController.saveFilm)
 router.post('/atualizar-conteudo', uploadImage, metadataController.update);
 router.get('/atualizar-conteudo', async (req, res)=>{
-    const data = await Metadata.find({})
+    const data = await Metadata.find({}).sort({ name: 1 });
+
 
     res.render('updateContentView', {conteudos: data})
 });

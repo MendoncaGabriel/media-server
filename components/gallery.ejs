@@ -1,4 +1,53 @@
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-screen-xl  m-auto lg:p-10 p-4 flex-none shadow-lg md:mt-16 mt-40 ">
+
+<style>
+  .blur-up img {
+    filter: blur(3px); /* Ajuste o valor do desfoque conforme necessário */
+    transition: filter 0.3s ease-in-out;
+  }
+
+  .blur-up img.loaded {
+    filter: none;
+  }
+
+</style>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-screen-xl m-auto lg:p-10 p-4 flex-none shadow-lg md:mt-16 mt-40">
+
+  <% if (typeof seriesPage != 'undefined' && seriesPage && seriesPage.length > 0) { %>   
+
+    <% seriesPage.forEach(element => { %>
+
+      <a href="/<%= element.type %>/<%= element._id %>" title="<%= element.name %>" >
+        <div class="md:w-64 w-40 rounded-sm overflow-hidden m-auto duration-200 hover:scale-105 hover:shadow relative">
+          <p class="text-gray-100 bg-red-600 absolute px-4 right-0"><%= element.rating  %></p>
+
+          <!-- Adicione a classe "aspect-w-16 aspect-h-9" para manter a proporção da imagem -->
+          <div class="aspect-w-16 aspect-h-9 blur-up">
+            <!-- Adicione o atributo loading="lazy" para carregamento lazy e classe "loaded" para remoção do desfoque -->
+            <img class="object-cover md:h-96 h-56 bg-gray-900 duration-200 lazyload" src="<%= element.image %>" alt="<%= element.title %>" loading="lazy" onload="this.classList.add('loaded')">
+          </div>
+
+          <div class="px-4 overflow-hidden py-4 text-gray-300 text-sm h-20 flex items-center justify-center">
+            <h2 class="text-center"><%= element.name  %></h2>
+          </div>
+        </div>
+      </a>
+      
+    <% }) %>
+
+  <% } %> 
+      
+</div>
+
+
+
+
+
+
+
+
+
+<!-- <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-screen-xl  m-auto lg:p-10 p-4 flex-none shadow-lg md:mt-16 mt-40 ">
 
   <% if (typeof seriesPage != 'undefined' && seriesPage && seriesPage.length > 0) { %>   
 
@@ -20,4 +69,4 @@
 
   <% } %> 
       
-</div>
+</div> -->

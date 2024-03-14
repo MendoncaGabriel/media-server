@@ -2,7 +2,6 @@ const MetadataSchema = require('../db/models/metadata.schema')
 
 exports.search = async (req, res) => {
   try {
-    console.log('teste');
     const termoPesquisa = req.body.arguments;
     console.log(termoPesquisa);
 

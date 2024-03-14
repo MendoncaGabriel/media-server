@@ -10,11 +10,11 @@ const renderHomeView = (res, seriesPage, next) => {
 const getPaginationData = async (page, type) => {
   const skip = (page - 1) * itemsPerPage;
   //ordenar do ultimo adicionado para primeiro adicionado
-  // const seriesPage = await MetadataSchema.find({ type }).sort({ _id: -1 }).skip(skip).limit(itemsPerPage);
+  const seriesPage = await MetadataSchema.find({ type }).sort({ _id: -1 }).skip(skip).limit(itemsPerPage);
 
 
   //ORDENA DA MAIOR AVALIAÇÃO PARA A MENOR
-  const seriesPage = await MetadataSchema.find({ type }).sort({ rating: -1 }).skip(skip).limit(itemsPerPage);
+  //const seriesPage = await MetadataSchema.find({ type }).sort({ rating: -1 }).skip(skip).limit(itemsPerPage);
 
   const next = seriesPage.length < itemsPerPage ? false : true;
   return { seriesPage, next };
